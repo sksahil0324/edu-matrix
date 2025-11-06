@@ -1,24 +1,50 @@
-import { api } from "@/convex/_generated/api";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useAuth } from "@/hooks/use-auth";
-import { useQuery } from "convex/react";
 import { motion } from "framer-motion";
 import { BarChart3, BookOpen, LogOut, TrendingUp, Users } from "lucide-react";
 import { useNavigate } from "react-router";
 
 export default function AdminDashboard() {
-  const { signOut } = useAuth();
   const navigate = useNavigate();
-  const data = useQuery(api.admin.getAdminDashboard);
 
-  if (!data) {
-    return (
-      <div className="min-h-screen bg-black cyber-grid flex items-center justify-center">
-        <div className="text-[#00ffff] text-xl cyber-glow">Loading dashboard...</div>
-      </div>
-    );
-  }
+  // Mock data for demo
+  const data = {
+    classes: [{ name: "Class 11A", id: "1" }],
+    students: [
+      { name: "Aryan Kumar", email: "aryan@edutrack.ai" },
+      { name: "Priya Singh", email: "priya@edutrack.ai" },
+    ],
+    teachers: [{ name: "Sonia Sharma", email: "sonia@edutrack.ai" }],
+    predictions: [
+      {
+        studentId: "1",
+        modelType: "Holistic",
+        riskLevel: "low",
+        dropoutProbability: 0.15,
+      },
+      {
+        studentId: "2",
+        modelType: "Holistic",
+        riskLevel: "medium",
+        dropoutProbability: 0.45,
+      },
+    ],
+    metrics: [
+      {
+        modelType: "Holistic",
+        weekNumber: 1,
+        accuracy: 0.93,
+        f1Score: 0.91,
+        rocAuc: 0.95,
+      },
+    ],
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("userRole");
+    localStorage.removeItem("username");
+    navigate("/login");
+  };
 
   const { classes, students, teachers, predictions, metrics } = data;
 
@@ -30,13 +56,13 @@ export default function AdminDashboard() {
           <div className="flex items-center gap-4">
             <img src="./logo.svg" alt="Logo" className="h-10 w-10 cursor-pointer" onClick={() => navigate("/")} />
             <div>
-              <h1 className="text-2xl font-bold text-[#00ffff] cyber-glow">ADMIN PORTAL</h1>
+              <h1 className="text-2xl font-bold text-[#00ffff] cyber-glow">EduTrack AI – AI Based Student Performance Predictor – ADMIN PORTAL</h1>
               <p className="text-sm text-gray-400">System Overview</p>
             </div>
           </div>
           <Button
             variant="outline"
-            onClick={() => signOut().then(() => navigate("/"))}
+            onClick={handleLogout}
             className="border-[#ff0080] text-[#ff0080] hover:bg-[#ff0080]/10"
           >
             <LogOut className="mr-2 h-4 w-4" />

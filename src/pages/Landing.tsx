@@ -1,11 +1,9 @@
 import { Button } from "@/components/ui/button";
-import { useAuth } from "@/hooks/use-auth";
 import { motion } from "framer-motion";
 import { Activity, Brain, ChevronRight, Gamepad2, LineChart, Shield, Sparkles, TrendingUp } from "lucide-react";
 import { useNavigate } from "react-router";
 
 export default function Landing() {
-  const { isAuthenticated, isLoading } = useAuth();
   const navigate = useNavigate();
 
   const features = [
@@ -74,15 +72,13 @@ export default function Landing() {
             </motion.div>
           
           <div className="flex items-center gap-4">
-            {!isLoading && (
-              <Button
-                onClick={() => navigate(isAuthenticated ? "/dashboard" : "/auth")}
-                className="bg-[#00ffff] text-black hover:bg-[#00ffff]/80 font-bold cyber-glow"
-              >
-                {isAuthenticated ? "Dashboard" : "Get Started"}
-                <ChevronRight className="ml-2 h-4 w-4" />
-              </Button>
-            )}
+            <Button
+              onClick={() => navigate("/login")}
+              className="bg-[#00ffff] text-black hover:bg-[#00ffff]/80 font-bold cyber-glow"
+            >
+              Get Started
+              <ChevronRight className="ml-2 h-4 w-4" />
+            </Button>
           </div>
         </div>
       </motion.nav>
@@ -118,14 +114,14 @@ export default function Landing() {
             </p>
             
             <div className="flex flex-wrap gap-4 justify-center">
-              <Button
-                size="lg"
-                onClick={() => navigate(isAuthenticated ? "/dashboard" : "/auth")}
-                className="bg-[#00ffff] text-black hover:bg-[#00ffff]/80 font-bold text-lg px-8 cyber-glow"
-              >
-                Launch Platform
-                <ChevronRight className="ml-2 h-5 w-5" />
-              </Button>
+            <Button
+              size="lg"
+              onClick={() => navigate("/login")}
+              className="bg-[#00ffff] text-black hover:bg-[#00ffff]/80 font-bold text-lg px-8 cyber-glow"
+            >
+              Launch Platform
+              <ChevronRight className="ml-2 h-5 w-5" />
+            </Button>
               
               <Button
                 size="lg"

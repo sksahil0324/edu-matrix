@@ -40,9 +40,9 @@ export default function Dashboard() {
 
   // Route to appropriate dashboard based on role
   if (user.role === "student") {
-    return <StudentDashboard userId={user._id} />;
+    return <StudentDashboard />;
   } else if (user.role === "teacher") {
-    return <TeacherDashboard userId={user._id} />;
+    return <TeacherDashboard />;
   } else if (user.role === "admin") {
     return <AdminDashboard />;
   }

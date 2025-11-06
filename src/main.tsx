@@ -1,21 +1,20 @@
 import { Toaster } from "@/components/ui/sonner";
 import { VlyToolbar } from "../vly-toolbar-readonly.tsx";
 import { InstrumentationProvider } from "@/instrumentation.tsx";
-import AuthPage from "@/pages/Auth.tsx";
-import Dashboard from "@/pages/Dashboard.tsx";
-import { ConvexAuthProvider } from "@convex-dev/auth/react";
 import { ConvexReactClient } from "convex/react";
 import { StrictMode, useEffect } from "react";
 import { createRoot } from "react-dom/client";
-import { BrowserRouter, Route, Routes, useLocation } from "react-router";
+import { BrowserRouter, Route, Routes, useLocation, Navigate } from "react-router";
 import "./index.css";
 import Landing from "./pages/Landing.tsx";
+import Login from "./pages/Login.tsx";
 import NotFound from "./pages/NotFound.tsx";
+import StudentDashboard from "./components/dashboards/StudentDashboard.tsx";
+import TeacherDashboard from "./components/dashboards/TeacherDashboard.tsx";
+import AdminDashboard from "./components/dashboards/AdminDashboard.tsx";
 import "./types/global.d.ts";
 
 const convex = new ConvexReactClient(import.meta.env.VITE_CONVEX_URL as string);
-
-
 
 function RouteSyncer() {
   const location = useLocation();
@@ -40,23 +39,51 @@ function RouteSyncer() {
   return null;
 }
 
+function ProtectedRoute({ children, requiredRole }: { children: React.ReactNode; requiredRole: string }) {
+  const userRole = localStorage.getItem("userRole");
+  if (!userRole || userRole !== requiredRole) {
+    return <Navigate to="/login" replace />;
+  }
+  return <>{children}</>;
+}
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <VlyToolbar />
     <InstrumentationProvider>
-      <ConvexAuthProvider client={convex}>
-        <BrowserRouter>
-          <RouteSyncer />
-          <Routes>
-            <Route path="/" element={<Landing />} />
-            <Route path="/auth" element={<AuthPage redirectAfterAuth="/dashboard" />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
+      <BrowserRouter>
+        <RouteSyncer />
+        <Routes>
+          <Route path="/" element={<Landing />} />
+          <Route path="/login" element={<Login />} />
+          <Route
+            path="/student/dashboard"
+            element={
+              <ProtectedRoute requiredRole="student">
+                <StudentDashboard userId={"" as any} />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/teacher/dashboard"
+            element={
+              <ProtectedRoute requiredRole="teacher">
+                <TeacherDashboard userId={"" as any} />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/dashboard"
+            element={
+              <ProtectedRoute requiredRole="admin">
+                <AdminDashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
         <Toaster />
-      </ConvexAuthProvider>
+      </BrowserRouter>
     </InstrumentationProvider>
   </StrictMode>,
 );

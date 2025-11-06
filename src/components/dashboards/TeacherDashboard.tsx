@@ -1,31 +1,53 @@
-import { api } from "@/convex/_generated/api";
-import { Id } from "@/convex/_generated/dataModel";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useAuth } from "@/hooks/use-auth";
-import { useQuery } from "convex/react";
 import { motion } from "framer-motion";
 import { AlertTriangle, BookOpen, LogOut, Users } from "lucide-react";
 import { useNavigate } from "react-router";
 
-interface TeacherDashboardProps {
-  userId: Id<"users">;
-}
-
-export default function TeacherDashboard({ userId }: TeacherDashboardProps) {
-  const { signOut } = useAuth();
+export default function TeacherDashboard() {
   const navigate = useNavigate();
-  const data = useQuery(api.teachers.getTeacherDashboard, { teacherId: userId });
 
-  if (!data) {
-    return (
-      <div className="min-h-screen bg-black cyber-grid flex items-center justify-center">
-        <div className="text-[#00ffff] text-xl cyber-glow">Loading dashboard...</div>
-      </div>
-    );
-  }
+  // Mock data for demo
+  const data = {
+    teacher: { name: "Sonia Sharma", email: "teacher_sonia@edutrack.ai" },
+    subjects: [
+      { name: "Science", id: "1" },
+      { name: "Computer Science", id: "2" },
+    ],
+    students: [
+      { name: "Aryan Kumar", email: "aryan@edutrack.ai" },
+      { name: "Priya Singh", email: "priya@edutrack.ai" },
+      { name: "Rohan Patel", email: "rohan@edutrack.ai" },
+    ],
+    performances: [
+      { grades: 85, subject: "Science" },
+      { grades: 92, subject: "Computer Science" },
+    ],
+    predictions: [
+      {
+        studentId: "student_1",
+        riskLevel: "low",
+        dropoutProbability: 0.15,
+        explanation: "Strong performance. No concerns.",
+        modelType: "Holistic",
+      },
+      {
+        studentId: "student_2",
+        riskLevel: "medium",
+        dropoutProbability: 0.45,
+        explanation: "Declining engagement. Recommend intervention.",
+        modelType: "Holistic",
+      },
+    ],
+  };
 
-  const { teacher, subjects, students, performances, predictions } = data;
+  const handleLogout = () => {
+    localStorage.removeItem("userRole");
+    localStorage.removeItem("username");
+    navigate("/login");
+  };
+
+  const { teacher, subjects, students, predictions } = data;
 
   const atRiskStudents = predictions.filter(p => p.riskLevel === "high" || p.riskLevel === "critical");
 
@@ -37,13 +59,13 @@ export default function TeacherDashboard({ userId }: TeacherDashboardProps) {
           <div className="flex items-center gap-4">
             <img src="./logo.svg" alt="Logo" className="h-10 w-10 cursor-pointer" onClick={() => navigate("/")} />
             <div>
-              <h1 className="text-2xl font-bold text-[#00ffff] cyber-glow">TEACHER PORTAL</h1>
+              <h1 className="text-2xl font-bold text-[#00ffff] cyber-glow">EduTrack AI – AI Based Student Performance Predictor – TEACHER PORTAL</h1>
               <p className="text-sm text-gray-400">{teacher?.name || "Teacher"}</p>
             </div>
           </div>
           <Button
             variant="outline"
-            onClick={() => signOut().then(() => navigate("/"))}
+            onClick={handleLogout}
             className="border-[#ff0080] text-[#ff0080] hover:bg-[#ff0080]/10"
           >
             <LogOut className="mr-2 h-4 w-4" />

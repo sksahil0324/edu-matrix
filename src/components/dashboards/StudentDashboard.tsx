@@ -1,30 +1,54 @@
-import { api } from "@/convex/_generated/api";
-import { Id } from "@/convex/_generated/dataModel";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { useAuth } from "@/hooks/use-auth";
-import { useQuery } from "convex/react";
 import { motion } from "framer-motion";
 import { Award, Brain, Flame, LogOut, Star, TrendingUp, Trophy, Zap } from "lucide-react";
 import { useNavigate } from "react-router";
 
-interface StudentDashboardProps {
-  userId: Id<"users">;
-}
-
-export default function StudentDashboard({ userId }: StudentDashboardProps) {
-  const { signOut } = useAuth();
+export default function StudentDashboard() {
   const navigate = useNavigate();
-  const data = useQuery(api.students.getStudentDashboard, { studentId: userId });
 
-  if (!data) {
-    return (
-      <div className="min-h-screen bg-black cyber-grid flex items-center justify-center">
-        <div className="text-[#00ffff] text-xl cyber-glow">Loading dashboard...</div>
-      </div>
-    );
-  }
+  // Mock data for demo
+  const data = {
+    student: { name: "Aryan Kumar", email: "student_aryan@edutrack.ai" },
+    performances: [
+      { grades: 85, subject: "Mathematics" },
+      { grades: 78, subject: "Science" },
+      { grades: 92, subject: "English" },
+      { grades: 88, subject: "Social Studies" },
+      { grades: 95, subject: "Computer Science" },
+    ],
+    predictions: [
+      {
+        riskLevel: "low",
+        dropoutProbability: 0.15,
+        explanation: "Strong performance across all subjects. Keep up the good work!",
+        modelType: "Holistic",
+        confidence: 0.93,
+        lhi: 0.85,
+      },
+    ],
+    gamification: {
+      level: 12,
+      xp: 11500,
+      streak: 28,
+      badges: ["Perfect Attendance", "Math Master", "Consistent Performer"],
+    },
+    recommendations: [
+      { message: "Focus on improving Science grades", priority: "high" },
+      { message: "Maintain your current study streak", priority: "medium" },
+    ],
+    challenges: [
+      { description: "Complete 5 assignments this week", xpReward: 100, completed: false },
+      { description: "Achieve 90% in next quiz", xpReward: 150, completed: false },
+    ],
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("userRole");
+    localStorage.removeItem("username");
+    navigate("/login");
+  };
 
   const { student, performances, predictions, gamification, recommendations, challenges } = data;
   const latestPrediction = predictions[0];
@@ -47,13 +71,13 @@ export default function StudentDashboard({ userId }: StudentDashboardProps) {
           <div className="flex items-center gap-4">
             <img src="./logo.svg" alt="Logo" className="h-10 w-10 cursor-pointer" onClick={() => navigate("/")} />
             <div>
-              <h1 className="text-2xl font-bold text-[#00ffff] cyber-glow">STUDENT PORTAL</h1>
+              <h1 className="text-2xl font-bold text-[#00ffff] cyber-glow">EduTrack AI – AI Based Student Performance Predictor – STUDENT PORTAL</h1>
               <p className="text-sm text-gray-400">{student?.name || "Student"}</p>
             </div>
           </div>
           <Button
             variant="outline"
-            onClick={() => signOut().then(() => navigate("/"))}
+            onClick={handleLogout}
             className="border-[#ff0080] text-[#ff0080] hover:bg-[#ff0080]/10"
           >
             <LogOut className="mr-2 h-4 w-4" />
