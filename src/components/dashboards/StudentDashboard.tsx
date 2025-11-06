@@ -9,7 +9,7 @@ export default function StudentDashboard() {
   const navigate = useNavigate();
 
   const data = {
-    student: { name: "Aryan Kumar", email: "student_aryan@edutrack.ai" },
+    student: { name: "Aryan Kumar - Class 9A", email: "aryan_kumar@edutrack.ai" },
     performances: [
       { grades: 85, subject: "Mathematics" },
       { grades: 78, subject: "Science" },
@@ -34,8 +34,8 @@ export default function StudentDashboard() {
       badges: ["Perfect Attendance", "Math Master", "Consistent Performer"],
     },
     recommendations: [
-      { message: "Focus on improving Science grades", priority: "high" },
-      { message: "Maintain your current study streak", priority: "medium" },
+      { message: "Focus on improving Science grades", priority: 2 },
+      { message: "Maintain your current study streak", priority: 1 },
     ],
     challenges: [
       { description: "Complete 5 assignments this week", xpReward: 100, completed: false },

@@ -35,13 +35,35 @@ export const getStudentDashboard = query({
       .collect();
 
     return {
-      student,
-      performances,
-      predictions,
-      gamification,
-      recommendations,
-      challenges,
+      student: { name: student.name || "Unknown", email: student.email || "No email" },
+      performances: performances.map(p => ({ grades: p.grades, subject: p.subjectId })),
+      predictions: predictions.map(p => ({
+        riskLevel: p.riskLevel,
+        dropoutProbability: p.dropoutProbability,
+        explanation: p.explanation,
+        modelType: p.modelType,
+        confidence: p.confidence,
+        lhi: p.lhi || 0.85
+      })),
+      gamification: gamification ? {
+        level: gamification.level,
+        xp: gamification.xp,
+        streak: gamification.streak,
+        badges: gamification.badges
+      } : null,
+      recommendations: recommendations.map(r => ({ message: r.message, priority: r.priority })),
+      challenges: challenges.map(c => ({ description: c.description, xpReward: c.xpReward, completed: c.completed })),
     };
+  },
+});
+
+export const getAllStudents = query({
+  args: {},
+  handler: async (ctx) => {
+    return await ctx.db
+      .query("users")
+      .withIndex("by_role", (q) => q.eq("role", "student"))
+      .collect();
   },
 });
 

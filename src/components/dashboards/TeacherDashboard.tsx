@@ -7,38 +7,34 @@ import { useNavigate } from "react-router";
 export default function TeacherDashboard() {
   const navigate = useNavigate();
 
-  // Mock data for demo
+  // Mock data for demo - represents dataset from Convex
   const data = {
-    teacher: { name: "Sonia Sharma", email: "teacher_sonia@edutrack.ai" },
+    teacher: { name: "Sonia Sharma", email: "sonia_sharma@edutrack.ai" },
     subjects: [
-      { name: "Science", id: "1" },
-      { name: "Computer Science", id: "2" },
+      { name: "Mathematics", id: "1" },
+      { name: "Science", id: "2" },
+      { name: "English", id: "3" },
+      { name: "Social Studies", id: "4" },
+      { name: "Computer Science", id: "5" },
     ],
-    students: [
-      { name: "Aryan Kumar", email: "aryan@edutrack.ai" },
-      { name: "Priya Singh", email: "priya@edutrack.ai" },
-      { name: "Rohan Patel", email: "rohan@edutrack.ai" },
-    ],
+    students: Array.from({ length: 38 }, (_, i) => ({
+      name: `Student ${i + 1} - Class 9A`,
+      email: `student${i + 1}@edutrack.ai`,
+    })),
     performances: [
-      { grades: 85, subject: "Science" },
-      { grades: 92, subject: "Computer Science" },
+      { grades: 85, subject: "Mathematics" },
+      { grades: 92, subject: "Science" },
+      { grades: 88, subject: "English" },
+      { grades: 78, subject: "Social Studies" },
+      { grades: 95, subject: "Computer Science" },
     ],
-    predictions: [
-      {
-        studentId: "student_1",
-        riskLevel: "low",
-        dropoutProbability: 0.15,
-        explanation: "Strong performance. No concerns.",
-        modelType: "Holistic",
-      },
-      {
-        studentId: "student_2",
-        riskLevel: "medium",
-        dropoutProbability: 0.45,
-        explanation: "Declining engagement. Recommend intervention.",
-        modelType: "Holistic",
-      },
-    ],
+    predictions: Array.from({ length: 10 }, (_, i) => ({
+      studentId: `student_${i + 1}`,
+      riskLevel: ["low", "medium", "high", "critical"][Math.floor(Math.random() * 4)] as "low" | "medium" | "high" | "critical",
+      dropoutProbability: Math.random(),
+      explanation: `Student performance analysis for week 12.`,
+      modelType: "Holistic",
+    })),
   };
 
   const handleLogout = () => {

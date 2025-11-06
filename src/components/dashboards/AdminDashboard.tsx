@@ -9,21 +9,21 @@ export default function AdminDashboard() {
 
   const dashboardData = {
     classes: [
+      { name: "Class 9A", year: 9, section: "A" },
+      { name: "Class 10A", year: 10, section: "A" },
       { name: "Class 11A", year: 11, section: "A" },
-      { name: "Class 11B", year: 11, section: "B" },
       { name: "Class 12A", year: 12, section: "A" },
     ],
-    students: [
-      { name: "Aryan Kumar", email: "aryan@edutrack.ai" },
-      { name: "Priya Singh", email: "priya@edutrack.ai" },
-      { name: "Rohan Patel", email: "rohan@edutrack.ai" },
-      { name: "Ananya Sharma", email: "ananya@edutrack.ai" },
-      { name: "Vikram Reddy", email: "vikram@edutrack.ai" },
-    ],
+    students: Array.from({ length: 150 }, (_, i) => ({
+      name: `Student ${i + 1}`,
+      email: `student${i + 1}@edutrack.ai`,
+    })),
     teachers: [
-      { name: "Sonia Sharma", email: "sonia@edutrack.ai" },
-      { name: "Rajesh Kumar", email: "rajesh@edutrack.ai" },
-      { name: "Meera Iyer", email: "meera@edutrack.ai" },
+      { name: "Sonia Sharma", email: "sonia_sharma@edutrack.ai" },
+      { name: "Rajesh Kumar", email: "rajesh_kumar@edutrack.ai" },
+      { name: "Meera Iyer", email: "meera_iyer@edutrack.ai" },
+      { name: "Priya Verma", email: "priya_verma@edutrack.ai" },
+      { name: "Amit Singh", email: "amit_singh@edutrack.ai" },
     ],
     predictions: [
       { modelType: "Holistic", riskLevel: "low", dropoutProbability: 0.15 },
@@ -31,12 +31,16 @@ export default function AdminDashboard() {
       { modelType: "Hybrid", riskLevel: "high", dropoutProbability: 0.68 },
       { modelType: "ML-Random Forest", riskLevel: "low", dropoutProbability: 0.22 },
       { modelType: "Rule-Based", riskLevel: "medium", dropoutProbability: 0.38 },
+      { modelType: "Holistic", riskLevel: "critical", dropoutProbability: 0.92 },
+      { modelType: "Temporal", riskLevel: "low", dropoutProbability: 0.18 },
+      { modelType: "Hybrid", riskLevel: "medium", dropoutProbability: 0.52 },
     ],
     metrics: [
       { modelType: "Temporal", weekNumber: 12, accuracy: 0.96, f1Score: 0.94, rocAuc: 0.97 },
       { modelType: "Holistic", weekNumber: 12, accuracy: 0.93, f1Score: 0.91, rocAuc: 0.94 },
       { modelType: "Hybrid", weekNumber: 12, accuracy: 0.91, f1Score: 0.89, rocAuc: 0.92 },
-      { modelType: "Random Forest", weekNumber: 12, accuracy: 0.88, f1Score: 0.86, rocAuc: 0.90 },
+      { modelType: "ML-Random Forest", weekNumber: 12, accuracy: 0.88, f1Score: 0.86, rocAuc: 0.90 },
+      { modelType: "Rule-Based", weekNumber: 12, accuracy: 0.75, f1Score: 0.72, rocAuc: 0.78 },
     ],
   };
 
