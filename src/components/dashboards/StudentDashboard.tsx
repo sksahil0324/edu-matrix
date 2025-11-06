@@ -9,7 +9,7 @@ export default function StudentDashboard() {
   const navigate = useNavigate();
 
   const data = {
-    student: { name: "Aryan Kumar - Class 9A", email: "aryan_kumar@edutrack.ai" },
+    student: { name: "Aryan Kumar - 1st Year", email: "aryan_kumar@edutrack.ai" },
     performances: [
       { grades: 85, subject: "Mathematics" },
       { grades: 78, subject: "Science" },

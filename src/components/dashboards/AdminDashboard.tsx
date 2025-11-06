@@ -9,10 +9,10 @@ export default function AdminDashboard() {
 
   const dashboardData = {
     classes: [
-      { name: "Class 9A", year: 9, section: "A" },
-      { name: "Class 10A", year: 10, section: "A" },
-      { name: "Class 11A", year: 11, section: "A" },
-      { name: "Class 12A", year: 12, section: "A" },
+      { name: "1st Year", year: 1, section: "A" },
+      { name: "2nd Year", year: 2, section: "A" },
+      { name: "3rd Year", year: 3, section: "A" },
+      { name: "4th Year", year: 4, section: "A" },
     ],
     students: Array.from({ length: 150 }, (_, i) => ({
       name: `Student ${i + 1}`,
