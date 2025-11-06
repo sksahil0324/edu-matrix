@@ -3,26 +3,50 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { motion } from "framer-motion";
 import { BarChart3, BookOpen, LogOut, TrendingUp, Users } from "lucide-react";
 import { useNavigate } from "react-router";
-import { useQuery } from "convex/react";
-import { api } from "@/convex/_generated/api";
 
 export default function AdminDashboard() {
   const navigate = useNavigate();
-  const dashboardData = useQuery(api.admin.getAdminDashboard);
+
+  // Mock data for demo
+  const dashboardData = {
+    classes: [
+      { name: "Class 11A", year: 11, section: "A" },
+      { name: "Class 11B", year: 11, section: "B" },
+      { name: "Class 12A", year: 12, section: "A" },
+    ],
+    students: [
+      { name: "Aryan Kumar", email: "aryan@edutrack.ai" },
+      { name: "Priya Singh", email: "priya@edutrack.ai" },
+      { name: "Rohan Patel", email: "rohan@edutrack.ai" },
+      { name: "Ananya Sharma", email: "ananya@edutrack.ai" },
+      { name: "Vikram Reddy", email: "vikram@edutrack.ai" },
+    ],
+    teachers: [
+      { name: "Sonia Sharma", email: "sonia@edutrack.ai" },
+      { name: "Rajesh Kumar", email: "rajesh@edutrack.ai" },
+      { name: "Meera Iyer", email: "meera@edutrack.ai" },
+    ],
+    predictions: [
+      { modelType: "Holistic", riskLevel: "low", dropoutProbability: 0.15 },
+      { modelType: "Temporal", riskLevel: "medium", dropoutProbability: 0.45 },
+      { modelType: "Hybrid", riskLevel: "high", dropoutProbability: 0.68 },
+      { modelType: "ML-Random Forest", riskLevel: "low", dropoutProbability: 0.22 },
+      { modelType: "Rule-Based", riskLevel: "medium", dropoutProbability: 0.38 },
+    ],
+    metrics: [
+      { modelType: "Temporal", weekNumber: 12, accuracy: 0.96, f1Score: 0.94, rocAuc: 0.97 },
+      { modelType: "Holistic", weekNumber: 12, accuracy: 0.93, f1Score: 0.91, rocAuc: 0.94 },
+      { modelType: "Hybrid", weekNumber: 12, accuracy: 0.91, f1Score: 0.89, rocAuc: 0.92 },
+      { modelType: "Random Forest", weekNumber: 12, accuracy: 0.88, f1Score: 0.86, rocAuc: 0.90 },
+    ],
+    performances: [],
+  };
 
   const handleLogout = () => {
     localStorage.removeItem("userRole");
     localStorage.removeItem("username");
     navigate("/login");
   };
-
-  if (!dashboardData) {
-    return (
-      <div className="min-h-screen bg-black cyber-grid flex items-center justify-center">
-        <p className="text-[#00ffff] cyber-glow">Loading dashboard...</p>
-      </div>
-    );
-  }
 
   const { classes, students, teachers, predictions, metrics, performances } = dashboardData;
 
