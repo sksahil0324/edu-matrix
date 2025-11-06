@@ -3,42 +3,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { motion } from "framer-motion";
 import { BarChart3, BookOpen, LogOut, TrendingUp, Users } from "lucide-react";
 import { useNavigate } from "react-router";
+import { useQuery } from "convex/react";
+import { api } from "@/convex/_generated/api";
 
 export default function AdminDashboard() {
   const navigate = useNavigate();
-
-  // Mock data for demo
-  const data = {
-    classes: [{ name: "Class 11A", id: "1" }],
-    students: [
-      { name: "Aryan Kumar", email: "aryan@edutrack.ai" },
-      { name: "Priya Singh", email: "priya@edutrack.ai" },
-    ],
-    teachers: [{ name: "Sonia Sharma", email: "sonia@edutrack.ai" }],
-    predictions: [
-      {
-        studentId: "1",
-        modelType: "Holistic",
-        riskLevel: "low",
-        dropoutProbability: 0.15,
-      },
-      {
-        studentId: "2",
-        modelType: "Holistic",
-        riskLevel: "medium",
-        dropoutProbability: 0.45,
-      },
-    ],
-    metrics: [
-      {
-        modelType: "Holistic",
-        weekNumber: 1,
-        accuracy: 0.93,
-        f1Score: 0.91,
-        rocAuc: 0.95,
-      },
-    ],
-  };
+  const dashboardData = useQuery(api.admin.getAdminDashboard);
 
   const handleLogout = () => {
     localStorage.removeItem("userRole");
@@ -46,7 +16,15 @@ export default function AdminDashboard() {
     navigate("/login");
   };
 
-  const { classes, students, teachers, predictions, metrics } = data;
+  if (!dashboardData) {
+    return (
+      <div className="min-h-screen bg-black cyber-grid flex items-center justify-center">
+        <p className="text-[#00ffff] cyber-glow">Loading dashboard...</p>
+      </div>
+    );
+  }
+
+  const { classes, students, teachers, predictions, metrics, performances } = dashboardData;
 
   return (
     <div className="min-h-screen bg-black cyber-grid">
@@ -79,7 +57,7 @@ export default function AdminDashboard() {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm text-gray-400">Classes</p>
-                    <p className="text-4xl font-bold text-[#00ffff] cyber-glow">{classes.length}</p>
+                    <p className="text-4xl font-bold text-[#00ffff]">{classes.length}</p>
                   </div>
                   <BookOpen className="h-12 w-12 text-[#00ffff]" />
                 </div>
@@ -93,7 +71,7 @@ export default function AdminDashboard() {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm text-gray-400">Students</p>
-                    <p className="text-4xl font-bold text-[#ff0080] cyber-glow-pink">{students.length}</p>
+                    <p className="text-4xl font-bold text-[#ff0080]">{students.length}</p>
                   </div>
                   <Users className="h-12 w-12 text-[#ff0080]" />
                 </div>
@@ -107,7 +85,7 @@ export default function AdminDashboard() {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm text-gray-400">Teachers</p>
-                    <p className="text-4xl font-bold text-[#00ff00] cyber-glow-green">{teachers.length}</p>
+                    <p className="text-4xl font-bold text-[#00ff00]">{teachers.length}</p>
                   </div>
                   <Users className="h-12 w-12 text-[#00ff00]" />
                 </div>
@@ -200,6 +178,30 @@ export default function AdminDashboard() {
             </Card>
           </motion.div>
         </div>
+
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6 }} className="mt-6">
+          <Card className="border-[#00ff00] bg-black/70">
+            <CardHeader>
+              <CardTitle className="text-[#00ff00]">STUDENT LIST</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-2 max-h-96 overflow-y-auto">
+                {students.length > 0 ? (
+                  students.map((student, idx) => (
+                    <div key={idx} className="border border-[#00ff00]/30 p-3 bg-black/50">
+                      <div className="flex justify-between items-center">
+                        <span className="text-gray-300 font-medium">{student.name || "Unknown"}</span>
+                        <span className="text-xs text-gray-500">{student.email || "No email"}</span>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <p className="text-gray-500 text-sm">No students found</p>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
       </div>
     </div>
   );
