@@ -7,7 +7,6 @@ import { useNavigate } from "react-router";
 export default function AdminDashboard() {
   const navigate = useNavigate();
 
-  // Mock data for demo
   const dashboardData = {
     classes: [
       { name: "Class 11A", year: 11, section: "A" },
@@ -39,7 +38,6 @@ export default function AdminDashboard() {
       { modelType: "Hybrid", weekNumber: 12, accuracy: 0.91, f1Score: 0.89, rocAuc: 0.92 },
       { modelType: "Random Forest", weekNumber: 12, accuracy: 0.88, f1Score: 0.86, rocAuc: 0.90 },
     ],
-    performances: [],
   };
 
   const handleLogout = () => {
@@ -48,24 +46,24 @@ export default function AdminDashboard() {
     navigate("/login");
   };
 
-  const { classes, students, teachers, predictions, metrics, performances } = dashboardData;
+  const { classes, students, teachers, predictions, metrics } = dashboardData;
 
   return (
-    <div className="min-h-screen bg-black cyber-grid">
+    <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white">
       {/* Header */}
-      <div className="border-b border-[#00ffff] bg-black/80 backdrop-blur-sm">
+      <div className="border-b border-slate-200 bg-white shadow-sm">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <img src="./logo.svg" alt="Logo" className="h-10 w-10 cursor-pointer" onClick={() => navigate("/")} />
             <div>
-              <h1 className="text-2xl font-bold text-[#00ffff] cyber-glow">EduTrack AI – AI Based Student Performance Predictor – ADMIN PORTAL</h1>
-              <p className="text-sm text-gray-400">System Overview</p>
+              <h1 className="text-2xl font-bold text-slate-900">Admin Dashboard</h1>
+              <p className="text-sm text-slate-600">System Overview</p>
             </div>
           </div>
           <Button
             variant="outline"
             onClick={handleLogout}
-            className="border-[#ff0080] text-[#ff0080] hover:bg-[#ff0080]/10"
+            className="border-red-300 text-red-600 hover:bg-red-50"
           >
             <LogOut className="mr-2 h-4 w-4" />
             Logout
@@ -76,56 +74,56 @@ export default function AdminDashboard() {
       <div className="container mx-auto px-4 py-8">
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-            <Card className="border-[#00ffff] bg-black/70">
+            <Card className="border-slate-200 bg-gradient-to-br from-blue-50 to-blue-100 card-shadow">
               <CardContent className="pt-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm text-gray-400">Classes</p>
-                    <p className="text-4xl font-bold text-[#00ffff]">{classes.length}</p>
+                    <p className="text-sm text-slate-600">Classes</p>
+                    <p className="text-4xl font-bold text-blue-600">{classes.length}</p>
                   </div>
-                  <BookOpen className="h-12 w-12 text-[#00ffff]" />
+                  <BookOpen className="h-12 w-12 text-blue-600" />
                 </div>
               </CardContent>
             </Card>
           </motion.div>
 
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
-            <Card className="border-[#ff0080] bg-black/70">
+            <Card className="border-slate-200 bg-gradient-to-br from-emerald-50 to-emerald-100 card-shadow">
               <CardContent className="pt-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm text-gray-400">Students</p>
-                    <p className="text-4xl font-bold text-[#ff0080]">{students.length}</p>
+                    <p className="text-sm text-slate-600">Students</p>
+                    <p className="text-4xl font-bold text-emerald-600">{students.length}</p>
                   </div>
-                  <Users className="h-12 w-12 text-[#ff0080]" />
+                  <Users className="h-12 w-12 text-emerald-600" />
                 </div>
               </CardContent>
             </Card>
           </motion.div>
 
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
-            <Card className="border-[#00ff00] bg-black/70">
+            <Card className="border-slate-200 bg-gradient-to-br from-indigo-50 to-indigo-100 card-shadow">
               <CardContent className="pt-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm text-gray-400">Teachers</p>
-                    <p className="text-4xl font-bold text-[#00ff00]">{teachers.length}</p>
+                    <p className="text-sm text-slate-600">Teachers</p>
+                    <p className="text-4xl font-bold text-indigo-600">{teachers.length}</p>
                   </div>
-                  <Users className="h-12 w-12 text-[#00ff00]" />
+                  <Users className="h-12 w-12 text-indigo-600" />
                 </div>
               </CardContent>
             </Card>
           </motion.div>
 
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
-            <Card className="border-[#ffff00] bg-black/70">
+            <Card className="border-slate-200 bg-gradient-to-br from-orange-50 to-orange-100 card-shadow">
               <CardContent className="pt-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm text-gray-400">Predictions</p>
-                    <p className="text-4xl font-bold text-[#ffff00]">{predictions.length}</p>
+                    <p className="text-sm text-slate-600">Predictions</p>
+                    <p className="text-4xl font-bold text-orange-600">{predictions.length}</p>
                   </div>
-                  <TrendingUp className="h-12 w-12 text-[#ffff00]" />
+                  <TrendingUp className="h-12 w-12 text-orange-600" />
                 </div>
               </CardContent>
             </Card>
@@ -134,40 +132,40 @@ export default function AdminDashboard() {
 
         <div className="grid lg:grid-cols-2 gap-6">
           <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.4 }}>
-            <Card className="border-[#00ffff] bg-black/70">
+            <Card className="border-slate-200 bg-white card-shadow">
               <CardHeader>
-                <CardTitle className="text-[#00ffff] flex items-center gap-2">
+                <CardTitle className="text-blue-600 flex items-center gap-2">
                   <BarChart3 className="h-5 w-5" />
-                  MODEL METRICS
+                  Model Metrics
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
                   {metrics.length > 0 ? (
                     metrics.map((metric, idx) => (
-                      <div key={idx} className="border border-[#00ffff]/30 p-3 bg-black/50">
+                      <div key={idx} className="border border-slate-200 p-3 bg-slate-50 rounded-lg">
                         <div className="flex justify-between items-center mb-2">
-                          <span className="text-sm font-bold text-[#00ffff]">{metric.modelType}</span>
-                          <span className="text-xs text-gray-500">Week {metric.weekNumber}</span>
+                          <span className="text-sm font-bold text-blue-600">{metric.modelType}</span>
+                          <span className="text-xs text-slate-500">Week {metric.weekNumber}</span>
                         </div>
                         <div className="grid grid-cols-3 gap-2 text-xs">
                           <div>
-                            <span className="text-gray-500">Accuracy:</span>
-                            <span className="text-[#00ff00] ml-1">{(metric.accuracy * 100).toFixed(1)}%</span>
+                            <span className="text-slate-600">Accuracy:</span>
+                            <span className="text-emerald-600 ml-1 font-semibold">{(metric.accuracy * 100).toFixed(1)}%</span>
                           </div>
                           <div>
-                            <span className="text-gray-500">F1:</span>
-                            <span className="text-[#ff0080] ml-1">{metric.f1Score.toFixed(2)}</span>
+                            <span className="text-slate-600">F1:</span>
+                            <span className="text-indigo-600 ml-1 font-semibold">{metric.f1Score.toFixed(2)}</span>
                           </div>
                           <div>
-                            <span className="text-gray-500">ROC:</span>
-                            <span className="text-[#ffff00] ml-1">{metric.rocAuc.toFixed(2)}</span>
+                            <span className="text-slate-600">ROC:</span>
+                            <span className="text-orange-600 ml-1 font-semibold">{metric.rocAuc.toFixed(2)}</span>
                           </div>
                         </div>
                       </div>
                     ))
                   ) : (
-                    <p className="text-gray-500 text-sm">No metrics available</p>
+                    <p className="text-slate-500 text-sm">No metrics available</p>
                   )}
                 </div>
               </CardContent>
@@ -175,26 +173,26 @@ export default function AdminDashboard() {
           </motion.div>
 
           <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.5 }}>
-            <Card className="border-[#ff0080] bg-black/70">
+            <Card className="border-slate-200 bg-white card-shadow">
               <CardHeader>
-                <CardTitle className="text-[#ff0080]">RECENT PREDICTIONS</CardTitle>
+                <CardTitle className="text-emerald-600">Recent Predictions</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-2 max-h-96 overflow-y-auto">
                   {predictions.slice(0, 10).map((pred, idx) => (
-                    <div key={idx} className="border border-[#ff0080]/30 p-3 bg-black/50">
+                    <div key={idx} className="border border-slate-200 p-3 bg-slate-50 rounded-lg">
                       <div className="flex justify-between items-start mb-1">
-                        <span className="text-xs text-gray-500">{pred.modelType}</span>
+                        <span className="text-xs text-slate-600">{pred.modelType}</span>
                         <span className={`text-xs font-bold uppercase ${
-                          pred.riskLevel === 'critical' ? 'text-[#ff0080]' :
-                          pred.riskLevel === 'high' ? 'text-[#ff8800]' :
-                          pred.riskLevel === 'medium' ? 'text-[#ffff00]' :
-                          'text-[#00ff00]'
+                          pred.riskLevel === 'critical' ? 'text-red-600' :
+                          pred.riskLevel === 'high' ? 'text-orange-600' :
+                          pred.riskLevel === 'medium' ? 'text-yellow-600' :
+                          'text-emerald-600'
                         }`}>
                           {pred.riskLevel}
                         </span>
                       </div>
-                      <p className="text-xs text-gray-400">{(pred.dropoutProbability * 100).toFixed(1)}% dropout probability</p>
+                      <p className="text-xs text-slate-600">{(pred.dropoutProbability * 100).toFixed(1)}% dropout probability</p>
                     </div>
                   ))}
                 </div>
@@ -204,23 +202,23 @@ export default function AdminDashboard() {
         </div>
 
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6 }} className="mt-6">
-          <Card className="border-[#00ff00] bg-black/70">
+          <Card className="border-slate-200 bg-white card-shadow">
             <CardHeader>
-              <CardTitle className="text-[#00ff00]">STUDENT LIST</CardTitle>
+              <CardTitle className="text-indigo-600">Student List</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-2 max-h-96 overflow-y-auto">
                 {students.length > 0 ? (
                   students.map((student, idx) => (
-                    <div key={idx} className="border border-[#00ff00]/30 p-3 bg-black/50">
+                    <div key={idx} className="border border-slate-200 p-3 bg-slate-50 rounded-lg">
                       <div className="flex justify-between items-center">
-                        <span className="text-gray-300 font-medium">{student.name || "Unknown"}</span>
-                        <span className="text-xs text-gray-500">{student.email || "No email"}</span>
+                        <span className="text-slate-700 font-medium">{student.name || "Unknown"}</span>
+                        <span className="text-xs text-slate-500">{student.email || "No email"}</span>
                       </div>
                     </div>
                   ))
                 ) : (
-                  <p className="text-gray-500 text-sm">No students found</p>
+                  <p className="text-slate-500 text-sm">No students found</p>
                 )}
               </div>
             </CardContent>
