@@ -18,7 +18,7 @@ export default function TeacherDashboard() {
       { name: "Computer Science", id: "5" },
     ],
     students: Array.from({ length: 38 }, (_, i) => ({
-      name: `Student ${i + 1} - Class 9A`,
+      name: `Student ${i + 1} - 1st Year`,
       email: `student${i + 1}@edutrack.ai`,
     })),
     performances: [
