@@ -64,14 +64,14 @@ export default function Landing() {
         className="fixed top-0 left-0 right-0 z-50 border-b border-[#00ffff] bg-black/80 backdrop-blur-sm"
       >
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <motion.div
-            className="flex items-center gap-2 cursor-pointer"
-            whileHover={{ scale: 1.05 }}
-            onClick={() => navigate("/")}
-          >
-            <img src="./logo.svg" alt="EduTrack AI" className="h-10 w-10" />
-            <span className="text-2xl font-bold cyber-glow">EDUTRACK.AI</span>
-          </motion.div>
+            <motion.div
+              className="flex items-center gap-2 cursor-pointer"
+              whileHover={{ scale: 1.05 }}
+              onClick={() => navigate("/")}
+            >
+              <img src="./logo.svg" alt="EduTrack AI – AI Based Student Performance Predictor" className="h-10 w-10" />
+              <span className="text-2xl font-bold cyber-glow">EDUTRACK.AI</span>
+            </motion.div>
           
           <div className="flex items-center gap-4">
             {!isLoading && (
@@ -105,15 +105,15 @@ export default function Landing() {
             </motion.div>
             
             <h1 className="text-6xl md:text-8xl font-bold mb-6 cyber-glow">
-              EDUTRACK<span className="text-[#ff0080]">.AI</span>
+              EDUTRACK.AI
             </h1>
             
             <p className="text-xl md:text-2xl text-[#00ffff] mb-4 cyber-glow">
-              Intelligent Academic Analytics & Dropout Prediction System
+              AI Based Student Performance Predictor
             </p>
             
             <p className="text-lg text-gray-400 mb-8 max-w-3xl mx-auto">
-              Harness the power of 5 AI models to predict student dropout risk, 
+              AI Based Student Performance Predictor – Harness the power of 5 AI models to predict student dropout risk, 
               monitor learning health, and gamify education with real-time analytics.
             </p>
             
@@ -244,7 +244,7 @@ export default function Landing() {
       {/* Footer */}
       <footer className="border-t border-[#00ffff] py-8 px-4 bg-black/80">
         <div className="container mx-auto text-center text-gray-500">
-          <p>© 2024 EduTrack.AI — Powered by Advanced Machine Learning</p>
+          <p>© 2024 EduTrack AI – AI Based Student Performance Predictor — Powered by Advanced Machine Learning</p>
         </div>
       </footer>
     </div>

@@ -1,3 +1,7 @@
+# EduTrack AI – AI Based Student Performance Predictor
+
+An intelligent academic analytics and dropout prediction system powered by advanced machine learning.
+
 ## Overview
 
 This project uses the following tech stack:
