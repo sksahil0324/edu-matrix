@@ -60,7 +60,7 @@ createRoot(document.getElementById("root")!).render(
             path="/student/dashboard"
             element={
               <ProtectedRoute requiredRole="student">
-                <StudentDashboard userId={"" as any} />
+                <StudentDashboard />
               </ProtectedRoute>
             }
           />
@@ -68,7 +68,7 @@ createRoot(document.getElementById("root")!).render(
             path="/teacher/dashboard"
             element={
               <ProtectedRoute requiredRole="teacher">
-                <TeacherDashboard userId={"" as any} />
+                <TeacherDashboard />
               </ProtectedRoute>
             }
           />

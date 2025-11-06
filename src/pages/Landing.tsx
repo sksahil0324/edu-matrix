@@ -122,14 +122,6 @@ export default function Landing() {
               Launch Platform
               <ChevronRight className="ml-2 h-5 w-5" />
             </Button>
-              
-              <Button
-                size="lg"
-                variant="outline"
-                className="border-[#ff0080] text-[#ff0080] hover:bg-[#ff0080]/10 font-bold text-lg px-8"
-              >
-                View Demo
-              </Button>
             </div>
           </motion.div>
         </div>
