@@ -52,21 +52,21 @@ export default function TeacherDashboard() {
   const atRiskStudents = predictions.filter(p => p.riskLevel === "high" || p.riskLevel === "critical");
 
   return (
-    <div className="min-h-screen bg-black cyber-grid">
+    <div className="min-h-screen bg-white">
       {/* Header */}
-      <div className="border-b border-[#00ffff] bg-black/80 backdrop-blur-sm">
+      <div className="border-b border-gray-200 bg-white shadow-sm">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <img src="./logo.svg" alt="Logo" className="h-10 w-10 cursor-pointer" onClick={() => navigate("/")} />
             <div>
-              <h1 className="text-2xl font-bold text-[#00ffff] cyber-glow">EduTrack AI – AI Based Student Performance Predictor – TEACHER PORTAL</h1>
-              <p className="text-sm text-gray-400">{teacher?.name || "Teacher"}</p>
+              <h1 className="text-2xl font-bold text-gray-900">Edu-Matrix – Teacher Portal</h1>
+              <p className="text-sm text-gray-600">{teacher?.name || "Teacher"}</p>
             </div>
           </div>
           <Button
             variant="outline"
             onClick={handleLogout}
-            className="border-[#ff0080] text-[#ff0080] hover:bg-[#ff0080]/10"
+            className="border-red-500 text-red-500 hover:bg-red-50"
           >
             <LogOut className="mr-2 h-4 w-4" />
             Logout
@@ -77,42 +77,42 @@ export default function TeacherDashboard() {
       <div className="container mx-auto px-4 py-8">
         <div className="grid lg:grid-cols-3 gap-6 mb-8">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-            <Card className="border-[#00ffff] bg-black/70">
+            <Card className="border-blue-200 bg-blue-50">
               <CardContent className="pt-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm text-gray-400">Total Students</p>
-                    <p className="text-4xl font-bold text-[#00ffff] cyber-glow">{students.length}</p>
+                    <p className="text-sm text-gray-600">Total Students</p>
+                    <p className="text-4xl font-bold text-blue-600">{students.length}</p>
                   </div>
-                  <Users className="h-12 w-12 text-[#00ffff]" />
+                  <Users className="h-12 w-12 text-blue-600" />
                 </div>
               </CardContent>
             </Card>
           </motion.div>
 
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
-            <Card className="border-[#ff0080] bg-black/70">
+            <Card className="border-purple-200 bg-purple-50">
               <CardContent className="pt-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm text-gray-400">Subjects</p>
-                    <p className="text-4xl font-bold text-[#ff0080] cyber-glow-pink">{subjects.length}</p>
+                    <p className="text-sm text-gray-600">Subjects</p>
+                    <p className="text-4xl font-bold text-purple-600">{subjects.length}</p>
                   </div>
-                  <BookOpen className="h-12 w-12 text-[#ff0080]" />
+                  <BookOpen className="h-12 w-12 text-purple-600" />
                 </div>
               </CardContent>
             </Card>
           </motion.div>
 
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
-            <Card className="border-[#ff8800] bg-black/70">
+            <Card className="border-orange-200 bg-orange-50">
               <CardContent className="pt-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm text-gray-400">At Risk</p>
-                    <p className="text-4xl font-bold text-[#ff8800]">{atRiskStudents.length}</p>
+                    <p className="text-sm text-gray-600">At Risk</p>
+                    <p className="text-4xl font-bold text-orange-600">{atRiskStudents.length}</p>
                   </div>
-                  <AlertTriangle className="h-12 w-12 text-[#ff8800]" />
+                  <AlertTriangle className="h-12 w-12 text-orange-600" />
                 </div>
               </CardContent>
             </Card>
@@ -121,16 +121,16 @@ export default function TeacherDashboard() {
 
         <div className="grid lg:grid-cols-2 gap-6">
           <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3 }}>
-            <Card className="border-[#00ffff] bg-black/70">
+            <Card className="border-blue-200 bg-white">
               <CardHeader>
-                <CardTitle className="text-[#00ffff]">STUDENT LIST</CardTitle>
+                <CardTitle className="text-blue-600">STUDENT LIST</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-2 max-h-96 overflow-y-auto">
                   {students.map((student, idx) => (
-                    <div key={idx} className="border border-[#00ffff]/30 p-3 bg-black/50 flex justify-between items-center">
-                      <span className="text-gray-300">{student.name}</span>
-                      <span className="text-xs text-gray-500">{student.email}</span>
+                    <div key={idx} className="border border-blue-200 p-3 bg-blue-50 flex justify-between items-center">
+                      <span className="text-gray-900">{student.name}</span>
+                      <span className="text-xs text-gray-600">{student.email}</span>
                     </div>
                   ))}
                 </div>
@@ -139,20 +139,20 @@ export default function TeacherDashboard() {
           </motion.div>
 
           <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.4 }}>
-            <Card className="border-[#ff0080] bg-black/70">
+            <Card className="border-red-200 bg-white">
               <CardHeader>
-                <CardTitle className="text-[#ff0080]">AT-RISK ALERTS</CardTitle>
+                <CardTitle className="text-red-600">AT-RISK ALERTS</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-2 max-h-96 overflow-y-auto">
                   {atRiskStudents.length > 0 ? (
                     atRiskStudents.map((pred, idx) => (
-                      <div key={idx} className="border border-[#ff0080]/30 p-3 bg-black/50">
+                      <div key={idx} className="border border-red-200 p-3 bg-red-50">
                         <div className="flex justify-between items-start mb-2">
-                          <span className="text-sm text-gray-300">Student ID: {pred.studentId}</span>
-                          <span className="text-xs font-bold text-[#ff0080] uppercase">{pred.riskLevel}</span>
+                          <span className="text-sm text-gray-900">Student ID: {pred.studentId}</span>
+                          <span className="text-xs font-bold text-red-600 uppercase">{pred.riskLevel}</span>
                         </div>
-                        <p className="text-xs text-gray-400">{pred.explanation}</p>
+                        <p className="text-xs text-gray-600">{pred.explanation}</p>
                       </div>
                     ))
                   ) : (
