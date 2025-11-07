@@ -18,13 +18,10 @@ export default function AdminDashboard() {
       name: `Student ${i + 1}`,
       email: `student${i + 1}@edutrack.ai`,
     })),
-    teachers: [
-      { name: "Sonia Sharma", email: "sonia_sharma@edutrack.ai" },
-      { name: "Rajesh Kumar", email: "rajesh_kumar@edutrack.ai" },
-      { name: "Meera Iyer", email: "meera_iyer@edutrack.ai" },
-      { name: "Priya Verma", email: "priya_verma@edutrack.ai" },
-      { name: "Amit Singh", email: "amit_singh@edutrack.ai" },
-    ],
+    teachers: Array.from({ length: 60 }, (_, i) => ({
+      name: `Teacher ${i + 1}`,
+      email: `teacher${i + 1}@edutrack.ai`,
+    })),
     predictions: [
       { modelType: "Holistic", riskLevel: "low", dropoutProbability: 0.15 },
       { modelType: "Temporal", riskLevel: "medium", dropoutProbability: 0.45 },
