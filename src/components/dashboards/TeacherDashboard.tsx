@@ -213,7 +213,7 @@ export default function TeacherDashboard() {
 
   const { teacher, subjects, predictions } = data;
 
-  const atRiskStudents = predictions.filter(p => p.riskLevel === "high" || p.riskLevel === "critical");
+  const atRiskStudents = students.filter((s: any) => s.riskLevel === "high" || s.riskLevel === "critical");
 
   const displayStudent = isEditMode ? editedStudent : selectedStudent;
 
@@ -369,13 +369,23 @@ export default function TeacherDashboard() {
               <CardContent>
                 <div className="space-y-2 max-h-96 overflow-y-auto">
                   {atRiskStudents.length > 0 ? (
-                    atRiskStudents.map((pred: any, idx: number) => (
+                    atRiskStudents.map((student: any, idx: number) => (
                       <div key={idx} className="border border-red-200 p-3 bg-red-50">
                         <div className="flex justify-between items-start mb-2">
-                          <span className="text-sm text-gray-900">Student ID: {pred.studentId}</span>
-                          <span className="text-xs font-bold text-red-600 uppercase">{pred.riskLevel}</span>
+                          <div className="flex-1">
+                            <span className="text-sm font-semibold text-gray-900">{student.name}</span>
+                            <span className="text-xs text-gray-600 ml-2">{student.email}</span>
+                          </div>
+                          <span className={`text-xs font-bold uppercase ${
+                            student.riskLevel === "critical" ? "text-red-600" : "text-orange-600"
+                          }`}>
+                            {student.riskLevel}
+                          </span>
                         </div>
-                        <p className="text-xs text-gray-600">{pred.explanation}</p>
+                        <div className="text-xs text-gray-600 space-y-1">
+                          <p>Attendance: {student.attendance}% | Grade: {student.overallGrade}%</p>
+                          <p>Dropout Probability: {(student.dropoutProbability * 100).toFixed(1)}%</p>
+                        </div>
                       </div>
                     ))
                   ) : (
