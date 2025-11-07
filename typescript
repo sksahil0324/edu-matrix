@@ -1,0 +1,6 @@
+const students = Array.from({ length: 38 }, (_, i) => {
+    const attendance = Math.floor(Math.random() * 30) + 70;  // Random!
+    const performances = [
+      { subject: "...", grade: Math.floor(Math.random() * 40) + 60 },  // Random!
+      // ... more random grades
+    ];

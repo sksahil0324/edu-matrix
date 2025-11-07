@@ -18,15 +18,17 @@ export default function TeacherDashboard() {
   const [editedStudent, setEditedStudent] = useState<any>(null);
 
   // Mock data for demo - represents dataset from Convex
-  // Mock data for demo - represents dataset from Convex
+  // Using deterministic data generation based on student index for consistency
   const students = Array.from({ length: 38 }, (_, i) => {
-      const attendance = Math.floor(Math.random() * 30) + 70;
+      // Use student index to generate consistent data (not random)
+      const seed = i + 1;
+      const attendance = 70 + ((seed * 7) % 31); // Deterministic: 70-100%
       const performances = [
-        { subject: "Data Structures & Algorithms", grade: Math.floor(Math.random() * 40) + 60 },
-        { subject: "Operating Systems", grade: Math.floor(Math.random() * 40) + 60 },
-        { subject: "Database Management Systems", grade: Math.floor(Math.random() * 40) + 60 },
-        { subject: "Computer Networks", grade: Math.floor(Math.random() * 40) + 60 },
-        { subject: "Software Engineering", grade: Math.floor(Math.random() * 40) + 60 },
+        { subject: "Data Structures & Algorithms", grade: 60 + ((seed * 11) % 41) },
+        { subject: "Operating Systems", grade: 60 + ((seed * 13) % 41) },
+        { subject: "Database Management Systems", grade: 60 + ((seed * 17) % 41) },
+        { subject: "Computer Networks", grade: 60 + ((seed * 19) % 41) },
+        { subject: "Software Engineering", grade: 60 + ((seed * 23) % 41) },
       ];
       const overallGrade = Math.floor(performances.reduce((sum, p) => sum + p.grade, 0) / performances.length);
       
@@ -63,9 +65,9 @@ export default function TeacherDashboard() {
         dropoutProbability,
         performances,
         gamification: {
-          level: Math.floor(Math.random() * 20) + 1,
-          xp: Math.floor(Math.random() * 15000),
-          streak: Math.floor(Math.random() * 30),
+          level: 1 + ((seed * 3) % 20),
+          xp: (seed * 397) % 15000,
+          streak: (seed * 5) % 31,
         },
       };
     });
