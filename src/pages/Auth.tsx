@@ -33,9 +33,10 @@ function Auth({ redirectAfterAuth }: AuthProps = {}) {
   const [selectedRole, setSelectedRole] = useState<"student" | "teacher">("student");
 
   useEffect(() => {
-    if (!authLoading && isAuthenticated) {
-      const redirect = redirectAfterAuth || "/";
-      navigate(redirect);
+    // Only redirect if authenticated AND we have a valid redirect path
+    // This prevents immediate redirect on page load
+    if (!authLoading && isAuthenticated && redirectAfterAuth) {
+      navigate(redirectAfterAuth);
     }
   }, [authLoading, isAuthenticated, navigate, redirectAfterAuth]);
 
