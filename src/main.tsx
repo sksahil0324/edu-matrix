@@ -8,6 +8,7 @@ import { BrowserRouter, Route, Routes, useLocation, Navigate } from "react-route
 import "./index.css";
 import Landing from "./pages/Landing.tsx";
 import Login from "./pages/Login.tsx";
+import Auth from "./pages/Auth.tsx";
 import NotFound from "./pages/NotFound.tsx";
 import StudentDashboard from "./components/dashboards/StudentDashboard.tsx";
 import TeacherDashboard from "./components/dashboards/TeacherDashboard.tsx";
@@ -56,6 +57,7 @@ createRoot(document.getElementById("root")!).render(
         <Routes>
           <Route path="/" element={<Landing />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/auth" element={<Auth />} />
           <Route
             path="/student/dashboard"
             element={
