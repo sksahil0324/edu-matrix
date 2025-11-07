@@ -58,8 +58,8 @@ export default function TeacherDashboard() {
       studentId: `student_${i + 1}`,
       riskLevel: ["low", "medium", "high", "critical"][Math.floor(Math.random() * 4)] as "low" | "medium" | "high" | "critical",
       dropoutProbability: Math.random(),
-      explanation: `Student performance analysis for week 12.`,
-      modelType: "Holistic",
+      explanation: `Student performance analysis for week 12 using Temporal model (96% accuracy).`,
+      modelType: "Temporal",
     })),
   };
 
