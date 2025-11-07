@@ -26,10 +26,11 @@ interface AuthProps {
 function Auth({ redirectAfterAuth }: AuthProps = {}) {
   const { isLoading: authLoading, isAuthenticated, signIn } = useAuth();
   const navigate = useNavigate();
-  const [step, setStep] = useState<"signIn" | { email: string }>("signIn");
+  const [step, setStep] = useState<"signIn" | { email: string; role: string }>("signIn");
   const [otp, setOtp] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [selectedRole, setSelectedRole] = useState<"student" | "teacher">("student");
 
   useEffect(() => {
     if (!authLoading && isAuthenticated) {
@@ -37,14 +38,16 @@ function Auth({ redirectAfterAuth }: AuthProps = {}) {
       navigate(redirect);
     }
   }, [authLoading, isAuthenticated, navigate, redirectAfterAuth]);
+
   const handleEmailSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setIsLoading(true);
     setError(null);
     try {
       const formData = new FormData(event.currentTarget);
+      const email = formData.get("email") as string;
       await signIn("email-otp", formData);
-      setStep({ email: formData.get("email") as string });
+      setStep({ email, role: selectedRole });
       setIsLoading(false);
     } catch (error) {
       console.error("Email sign-in error:", error);
@@ -67,7 +70,19 @@ function Auth({ redirectAfterAuth }: AuthProps = {}) {
 
       console.log("signed in");
 
-      const redirect = redirectAfterAuth || "/";
+      // Store the selected role
+      if (step !== "signIn") {
+        localStorage.setItem("userRole", step.role);
+      }
+
+      // Redirect based on role
+      const roleRedirect = step !== "signIn" && step.role === "teacher" 
+        ? "/teacher/dashboard" 
+        : step !== "signIn" && step.role === "student"
+        ? "/student/dashboard"
+        : "/";
+      
+      const redirect = redirectAfterAuth || roleRedirect;
       navigate(redirect);
     } catch (error) {
       console.error("OTP verification error:", error);
@@ -86,7 +101,16 @@ function Auth({ redirectAfterAuth }: AuthProps = {}) {
       console.log("Attempting anonymous sign in...");
       await signIn("anonymous");
       console.log("Anonymous sign in successful");
-      const redirect = redirectAfterAuth || "/";
+      
+      // Store guest role
+      localStorage.setItem("userRole", selectedRole);
+      
+      // Redirect based on selected role
+      const roleRedirect = selectedRole === "teacher" 
+        ? "/teacher/dashboard" 
+        : "/student/dashboard";
+      
+      const redirect = redirectAfterAuth || roleRedirect;
       navigate(redirect);
     } catch (error) {
       console.error("Guest login error:", error);
@@ -119,12 +143,35 @@ function Auth({ redirectAfterAuth }: AuthProps = {}) {
                   </div>
                 <CardTitle className="text-xl">Get Started</CardTitle>
                 <CardDescription>
-                  Enter your email to log in or sign up
+                  Create your account or sign in
                 </CardDescription>
               </CardHeader>
               <form onSubmit={handleEmailSubmit}>
                 <CardContent>
                   
+                  {/* Role Selection */}
+                  <div className="mb-4">
+                    <label className="text-sm font-semibold text-slate-700 mb-2 block">I am a:</label>
+                    <div className="grid grid-cols-2 gap-3">
+                      <Button
+                        type="button"
+                        variant={selectedRole === "student" ? "default" : "outline"}
+                        onClick={() => setSelectedRole("student")}
+                        className={selectedRole === "student" ? "bg-blue-600 hover:bg-blue-700" : ""}
+                      >
+                        Student
+                      </Button>
+                      <Button
+                        type="button"
+                        variant={selectedRole === "teacher" ? "default" : "outline"}
+                        onClick={() => setSelectedRole("teacher")}
+                        className={selectedRole === "teacher" ? "bg-blue-600 hover:bg-blue-700" : ""}
+                      >
+                        Teacher
+                      </Button>
+                    </div>
+                  </div>
+
                   <div className="relative flex items-center gap-2">
                     <div className="relative flex-1">
                       <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
@@ -174,7 +221,7 @@ function Auth({ redirectAfterAuth }: AuthProps = {}) {
                       disabled={isLoading}
                     >
                       <UserX className="mr-2 h-4 w-4" />
-                      Continue as Guest
+                      Continue as Guest {selectedRole === "teacher" ? "Teacher" : "Student"}
                     </Button>
                   </div>
                 </CardContent>
