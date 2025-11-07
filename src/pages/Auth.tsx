@@ -24,21 +24,13 @@ interface AuthProps {
 }
 
 function Auth({ redirectAfterAuth }: AuthProps = {}) {
-  const { isLoading: authLoading, isAuthenticated, signIn } = useAuth();
+  const { signIn } = useAuth();
   const navigate = useNavigate();
   const [step, setStep] = useState<"signIn" | { email: string; role: string }>("signIn");
   const [otp, setOtp] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [selectedRole, setSelectedRole] = useState<"student" | "teacher">("student");
-
-  useEffect(() => {
-    // Only redirect if authenticated AND we have a valid redirect path
-    // This prevents immediate redirect on page load
-    if (!authLoading && isAuthenticated && redirectAfterAuth) {
-      navigate(redirectAfterAuth);
-    }
-  }, [authLoading, isAuthenticated, navigate, redirectAfterAuth]);
 
   const handleEmailSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
