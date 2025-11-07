@@ -20,11 +20,11 @@ export default function StudentDashboard() {
     predictions: [
       {
         riskLevel: "low",
-        dropoutProbability: 0.15,
-        explanation: "Strong performance across all subjects. Keep up the good work!",
+        dropoutProbability: 0.12,
+        explanation: "Excellent performance across all subjects with consistent engagement. The Temporal model (96% accuracy) predicts very low dropout risk based on strong academic metrics and high learning health index.",
         modelType: "Temporal",
         confidence: 0.96,
-        lhi: 0.85,
+        lhi: 0.88,
       },
     ],
     gamification: {

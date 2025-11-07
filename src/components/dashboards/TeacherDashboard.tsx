@@ -54,13 +54,22 @@ export default function TeacherDashboard() {
       { grades: 78, subject: "Computer Networks" },
       { grades: 95, subject: "Software Engineering" },
     ],
-    predictions: Array.from({ length: 10 }, (_, i) => ({
-      studentId: `student_${i + 1}`,
-      riskLevel: ["low", "medium", "high", "critical"][Math.floor(Math.random() * 4)] as "low" | "medium" | "high" | "critical",
-      dropoutProbability: Math.random(),
-      explanation: `Student performance analysis for week 12 using Temporal model (96% accuracy).`,
-      modelType: "Temporal",
-    })),
+    predictions: Array.from({ length: 10 }, (_, i) => {
+      const probability = Math.random();
+      let riskLevel: "low" | "medium" | "high" | "critical";
+      if (probability < 0.25) riskLevel = "low";
+      else if (probability < 0.50) riskLevel = "medium";
+      else if (probability < 0.75) riskLevel = "high";
+      else riskLevel = "critical";
+      
+      return {
+        studentId: `student_${i + 1}`,
+        riskLevel,
+        dropoutProbability: probability,
+        explanation: `Temporal model (96% accuracy) analysis: ${riskLevel} risk detected based on attendance, grades, engagement, and behavioral patterns over the past 12 weeks.`,
+        modelType: "Temporal",
+      };
+    }),
   };
 
   const handleLogout = () => {
