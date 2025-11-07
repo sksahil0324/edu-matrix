@@ -118,10 +118,45 @@ export default function TeacherDashboard() {
   const handleSaveEdit = () => {
     // Update the student data
     if (editedStudent) {
+      // Recalculate risk based on updated data
+      const updatedStudent = { ...editedStudent };
+      
+      // Recalculate overall grade from performances
+      const newOverallGrade = Math.floor(
+        updatedStudent.performances.reduce((sum: number, p: any) => sum + p.grade, 0) / 
+        updatedStudent.performances.length
+      );
+      updatedStudent.overallGrade = newOverallGrade;
+      
+      // Recalculate risk based on actual data
+      const attendanceScore = updatedStudent.attendance / 100;
+      const gradeScore = newOverallGrade / 100;
+      const performanceScore = (attendanceScore + gradeScore) / 2;
+      
+      let riskLevel: "low" | "medium" | "high" | "critical";
+      let dropoutProbability: number;
+      
+      if (performanceScore >= 0.85) {
+        riskLevel = "low";
+        dropoutProbability = 0.05 + Math.random() * 0.15;
+      } else if (performanceScore >= 0.75) {
+        riskLevel = "medium";
+        dropoutProbability = 0.25 + Math.random() * 0.20;
+      } else if (performanceScore >= 0.65) {
+        riskLevel = "high";
+        dropoutProbability = 0.50 + Math.random() * 0.25;
+      } else {
+        riskLevel = "critical";
+        dropoutProbability = 0.75 + Math.random() * 0.20;
+      }
+      
+      updatedStudent.riskLevel = riskLevel;
+      updatedStudent.dropoutProbability = dropoutProbability;
+      
       // In a real app, this would call a mutation to update the database
-      setSelectedStudent(editedStudent);
+      setSelectedStudent(updatedStudent);
       setIsEditMode(false);
-      toast.success("Student details updated successfully!");
+      toast.success("Student details and risk assessment updated successfully!");
     }
   };
 
@@ -133,12 +168,23 @@ export default function TeacherDashboard() {
   };
 
   const handlePerformanceChange = (index: number, value: number) => {
-    setEditedStudent((prev: any) => ({
-      ...prev,
-      performances: prev.performances.map((perf: any, idx: number) =>
+    setEditedStudent((prev: any) => {
+      const updatedPerformances = prev.performances.map((perf: any, idx: number) =>
         idx === index ? { ...perf, grade: value } : perf
-      ),
-    }));
+      );
+      
+      // Recalculate overall grade
+      const newOverallGrade = Math.floor(
+        updatedPerformances.reduce((sum: number, p: any) => sum + p.grade, 0) / 
+        updatedPerformances.length
+      );
+      
+      return {
+        ...prev,
+        performances: updatedPerformances,
+        overallGrade: newOverallGrade,
+      };
+    });
   };
 
   const getRiskColor = (level: string) => {
