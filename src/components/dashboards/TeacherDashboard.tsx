@@ -1,11 +1,15 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Progress } from "@/components/ui/progress";
 import { motion } from "framer-motion";
-import { AlertTriangle, BookOpen, LogOut, Users } from "lucide-react";
+import { AlertTriangle, BookOpen, Eye, LogOut, Users } from "lucide-react";
+import { useState } from "react";
 import { useNavigate } from "react-router";
 
 export default function TeacherDashboard() {
   const navigate = useNavigate();
+  const [selectedStudent, setSelectedStudent] = useState<any>(null);
 
   // Mock data for demo - represents dataset from Convex
   const data = {
@@ -18,8 +22,25 @@ export default function TeacherDashboard() {
       { name: "Computer Science", id: "5" },
     ],
     students: Array.from({ length: 38 }, (_, i) => ({
+      id: `student_${i + 1}`,
       name: `Student ${i + 1} - 1st Year`,
       email: `student${i + 1}@edutrack.ai`,
+      attendance: Math.floor(Math.random() * 30) + 70,
+      overallGrade: Math.floor(Math.random() * 40) + 60,
+      riskLevel: ["low", "medium", "high", "critical"][Math.floor(Math.random() * 4)] as "low" | "medium" | "high" | "critical",
+      dropoutProbability: Math.random(),
+      performances: [
+        { subject: "Mathematics", grade: Math.floor(Math.random() * 40) + 60 },
+        { subject: "Science", grade: Math.floor(Math.random() * 40) + 60 },
+        { subject: "English", grade: Math.floor(Math.random() * 40) + 60 },
+        { subject: "Social Studies", grade: Math.floor(Math.random() * 40) + 60 },
+        { subject: "Computer Science", grade: Math.floor(Math.random() * 40) + 60 },
+      ],
+      gamification: {
+        level: Math.floor(Math.random() * 20) + 1,
+        xp: Math.floor(Math.random() * 15000),
+        streak: Math.floor(Math.random() * 30),
+      },
     })),
     performances: [
       { grades: 85, subject: "Mathematics" },
@@ -41,6 +62,26 @@ export default function TeacherDashboard() {
     localStorage.removeItem("userRole");
     localStorage.removeItem("username");
     navigate("/login");
+  };
+
+  const getRiskColor = (level: string) => {
+    switch (level) {
+      case "low": return "text-emerald-600";
+      case "medium": return "text-yellow-600";
+      case "high": return "text-orange-600";
+      case "critical": return "text-red-600";
+      default: return "text-blue-600";
+    }
+  };
+
+  const getRiskBgColor = (level: string) => {
+    switch (level) {
+      case "low": return "bg-emerald-50 border-emerald-200";
+      case "medium": return "bg-yellow-50 border-yellow-200";
+      case "high": return "bg-orange-50 border-orange-200";
+      case "critical": return "bg-red-50 border-red-200";
+      default: return "bg-blue-50 border-blue-200";
+    }
   };
 
   const { teacher, subjects, students, predictions } = data;
@@ -125,8 +166,18 @@ export default function TeacherDashboard() {
                 <div className="space-y-2 max-h-96 overflow-y-auto">
                   {students.map((student, idx) => (
                     <div key={idx} className="border border-blue-200 p-3 bg-blue-50 flex justify-between items-center">
-                      <span className="text-gray-900">{student.name}</span>
-                      <span className="text-xs text-gray-600">{student.email}</span>
+                      <div className="flex-1">
+                        <span className="text-gray-900 font-medium">{student.name}</span>
+                        <span className="text-xs text-gray-600 ml-2">{student.email}</span>
+                      </div>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => setSelectedStudent(student)}
+                        className="text-blue-600 hover:text-blue-700 hover:bg-blue-100"
+                      >
+                        <Eye className="h-4 w-4" />
+                      </Button>
                     </div>
                   ))}
                 </div>
@@ -160,6 +211,87 @@ export default function TeacherDashboard() {
           </motion.div>
         </div>
       </div>
+
+      {/* Student Details Dialog */}
+      <Dialog open={!!selectedStudent} onOpenChange={() => setSelectedStudent(null)}>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="text-2xl font-bold text-blue-600">Student Details</DialogTitle>
+          </DialogHeader>
+          
+          {selectedStudent && (
+            <div className="space-y-6">
+              {/* Basic Info */}
+              <div className={`border rounded-lg p-4 ${getRiskBgColor(selectedStudent.riskLevel)}`}>
+                <h3 className="font-bold text-lg mb-2">{selectedStudent.name}</h3>
+                <p className="text-sm text-gray-600 mb-3">{selectedStudent.email}</p>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <p className="text-xs text-gray-600">Attendance</p>
+                    <p className="text-2xl font-bold text-blue-600">{selectedStudent.attendance}%</p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-600">Overall Grade</p>
+                    <p className="text-2xl font-bold text-emerald-600">{selectedStudent.overallGrade}%</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Risk Assessment */}
+              <div className="border border-slate-200 rounded-lg p-4 bg-white">
+                <h4 className="font-semibold mb-3 text-slate-900">Dropout Risk Assessment</h4>
+                <div className="space-y-2">
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-gray-600">Risk Level</span>
+                    <span className={`font-bold uppercase text-sm ${getRiskColor(selectedStudent.riskLevel)}`}>
+                      {selectedStudent.riskLevel}
+                    </span>
+                  </div>
+                  <Progress value={selectedStudent.dropoutProbability * 100} className="h-2" />
+                  <p className="text-xs text-gray-600">
+                    {(selectedStudent.dropoutProbability * 100).toFixed(1)}% dropout probability
+                  </p>
+                </div>
+              </div>
+
+              {/* Subject Performance */}
+              <div className="border border-slate-200 rounded-lg p-4 bg-white">
+                <h4 className="font-semibold mb-3 text-slate-900">Subject Performance</h4>
+                <div className="space-y-3">
+                  {selectedStudent.performances.map((perf: any, idx: number) => (
+                    <div key={idx} className="space-y-1">
+                      <div className="flex justify-between text-sm">
+                        <span className="text-gray-600">{perf.subject}</span>
+                        <span className="font-bold text-blue-600">{perf.grade}%</span>
+                      </div>
+                      <Progress value={perf.grade} className="h-2" />
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Gamification Stats */}
+              <div className="border border-slate-200 rounded-lg p-4 bg-white">
+                <h4 className="font-semibold mb-3 text-slate-900">Engagement & Progress</h4>
+                <div className="grid grid-cols-3 gap-4">
+                  <div className="text-center">
+                    <p className="text-xs text-gray-600">Level</p>
+                    <p className="text-2xl font-bold text-blue-600">{selectedStudent.gamification.level}</p>
+                  </div>
+                  <div className="text-center">
+                    <p className="text-xs text-gray-600">XP</p>
+                    <p className="text-2xl font-bold text-emerald-600">{selectedStudent.gamification.xp}</p>
+                  </div>
+                  <div className="text-center">
+                    <p className="text-xs text-gray-600">Streak</p>
+                    <p className="text-2xl font-bold text-orange-600">{selectedStudent.gamification.streak}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
