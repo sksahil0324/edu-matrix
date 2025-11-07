@@ -19,7 +19,8 @@ export default function TeacherDashboard() {
 
   // Mock data for demo - represents dataset from Convex
   // Using deterministic data generation based on student index for consistency
-  const students = Array.from({ length: 38 }, (_, i) => {
+  // Store in state to persist edits
+  const [students, setStudents] = useState(() => Array.from({ length: 38 }, (_, i) => {
       // Use student index to generate consistent data (not random)
       const seed = i + 1;
       const attendance = 70 + ((seed * 7) % 31); // Deterministic: 70-100%
@@ -70,7 +71,7 @@ export default function TeacherDashboard() {
           streak: (seed * 5) % 31,
         },
       };
-    });
+    }));
 
   const data = {
     teacher: { name: "Sonia Sharma", email: "sonia_sharma@edutrack.ai" },
@@ -132,7 +133,7 @@ export default function TeacherDashboard() {
       );
       updatedStudent.overallGrade = newOverallGrade;
       
-      // Recalculate risk based on actual data
+      // Recalculate risk based on actual data using consistent Temporal model thresholds
       const attendanceScore = updatedStudent.attendance / 100;
       const gradeScore = newOverallGrade / 100;
       const performanceScore = (attendanceScore + gradeScore) / 2;
@@ -142,22 +143,26 @@ export default function TeacherDashboard() {
       
       if (performanceScore >= 0.85) {
         riskLevel = "low";
-        dropoutProbability = 0.05 + Math.random() * 0.15;
+        dropoutProbability = 0.10;
       } else if (performanceScore >= 0.75) {
         riskLevel = "medium";
-        dropoutProbability = 0.25 + Math.random() * 0.20;
+        dropoutProbability = 0.30;
       } else if (performanceScore >= 0.65) {
         riskLevel = "high";
-        dropoutProbability = 0.50 + Math.random() * 0.25;
+        dropoutProbability = 0.60;
       } else {
         riskLevel = "critical";
-        dropoutProbability = 0.75 + Math.random() * 0.20;
+        dropoutProbability = 0.85;
       }
       
       updatedStudent.riskLevel = riskLevel;
       updatedStudent.dropoutProbability = dropoutProbability;
       
-      // In a real app, this would call a mutation to update the database
+      // Update the students array to persist the changes
+      setStudents(prevStudents => 
+        prevStudents.map(s => s.id === updatedStudent.id ? updatedStudent : s)
+      );
+      
       setSelectedStudent(updatedStudent);
       setIsEditMode(false);
       toast.success("Student details and risk assessment updated successfully!");
