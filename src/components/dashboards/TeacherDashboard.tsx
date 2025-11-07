@@ -7,11 +7,32 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { motion } from "framer-motion";
 import { AlertTriangle, BookOpen, Eye, LogOut, Users, Edit, Save, X } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
+import { useAuth } from "@/hooks/use-auth";
+import { useMutation } from "convex/react";
+import { api } from "@/convex/_generated/api";
 import { toast } from "sonner";
 
 export default function TeacherDashboard() {
+  const { user } = useAuth();
+  const initializeUser = useMutation(api.seedUser.initializeNewUser);
+  const [initialized, setInitialized] = useState(false);
+
+  useEffect(() => {
+    const initializeIfNeeded = async () => {
+      if (user && !user.role && !initialized) {
+        try {
+          await initializeUser({ role: "teacher" });
+          setInitialized(true);
+        } catch (error) {
+          console.error("Failed to initialize user:", error);
+        }
+      }
+    };
+    initializeIfNeeded();
+  }, [user, initialized, initializeUser]);
+
   const navigate = useNavigate();
   const [selectedStudent, setSelectedStudent] = useState<any>(null);
   const [isEditMode, setIsEditMode] = useState(false);

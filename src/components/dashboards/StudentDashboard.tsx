@@ -4,8 +4,30 @@ import { Progress } from "@/components/ui/progress";
 import { motion } from "framer-motion";
 import { Award, Brain, Flame, LogOut, Star, TrendingUp, Trophy, Zap } from "lucide-react";
 import { useNavigate } from "react-router";
+import { useEffect, useState } from "react";
+import { useAuth } from "@/hooks/use-auth";
+import { useMutation } from "convex/react";
+import { api } from "@/convex/_generated/api";
 
 export default function StudentDashboard() {
+  const { user } = useAuth();
+  const initializeUser = useMutation(api.seedUser.initializeNewUser);
+  const [initialized, setInitialized] = useState(false);
+
+  useEffect(() => {
+    const initializeIfNeeded = async () => {
+      if (user && !user.role && !initialized) {
+        try {
+          await initializeUser({ role: "student" });
+          setInitialized(true);
+        } catch (error) {
+          console.error("Failed to initialize user:", error);
+        }
+      }
+    };
+    initializeIfNeeded();
+  }, [user, initialized, initializeUser]);
+
   const navigate = useNavigate();
 
   const data = {
