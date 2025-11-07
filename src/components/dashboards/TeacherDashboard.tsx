@@ -15,11 +15,11 @@ export default function TeacherDashboard() {
   const data = {
     teacher: { name: "Sonia Sharma", email: "sonia_sharma@edutrack.ai" },
     subjects: [
-      { name: "Mathematics", id: "1" },
-      { name: "Science", id: "2" },
-      { name: "English", id: "3" },
-      { name: "Social Studies", id: "4" },
-      { name: "Computer Science", id: "5" },
+      { name: "Data Structures & Algorithms", id: "1" },
+      { name: "Operating Systems", id: "2" },
+      { name: "Database Management Systems", id: "3" },
+      { name: "Computer Networks", id: "4" },
+      { name: "Software Engineering", id: "5" },
     ],
     students: Array.from({ length: 38 }, (_, i) => ({
       id: `student_${i + 1}`,
@@ -30,11 +30,11 @@ export default function TeacherDashboard() {
       riskLevel: ["low", "medium", "high", "critical"][Math.floor(Math.random() * 4)] as "low" | "medium" | "high" | "critical",
       dropoutProbability: Math.random(),
       performances: [
-        { subject: "Mathematics", grade: Math.floor(Math.random() * 40) + 60 },
-        { subject: "Science", grade: Math.floor(Math.random() * 40) + 60 },
-        { subject: "English", grade: Math.floor(Math.random() * 40) + 60 },
-        { subject: "Social Studies", grade: Math.floor(Math.random() * 40) + 60 },
-        { subject: "Computer Science", grade: Math.floor(Math.random() * 40) + 60 },
+        { subject: "Data Structures & Algorithms", grade: Math.floor(Math.random() * 40) + 60 },
+        { subject: "Operating Systems", grade: Math.floor(Math.random() * 40) + 60 },
+        { subject: "Database Management Systems", grade: Math.floor(Math.random() * 40) + 60 },
+        { subject: "Computer Networks", grade: Math.floor(Math.random() * 40) + 60 },
+        { subject: "Software Engineering", grade: Math.floor(Math.random() * 40) + 60 },
       ],
       gamification: {
         level: Math.floor(Math.random() * 20) + 1,
@@ -43,11 +43,11 @@ export default function TeacherDashboard() {
       },
     })),
     performances: [
-      { grades: 85, subject: "Mathematics" },
-      { grades: 92, subject: "Science" },
-      { grades: 88, subject: "English" },
-      { grades: 78, subject: "Social Studies" },
-      { grades: 95, subject: "Computer Science" },
+      { grades: 85, subject: "Data Structures & Algorithms" },
+      { grades: 92, subject: "Operating Systems" },
+      { grades: 88, subject: "Database Management Systems" },
+      { grades: 78, subject: "Computer Networks" },
+      { grades: 95, subject: "Software Engineering" },
     ],
     predictions: Array.from({ length: 10 }, (_, i) => ({
       studentId: `student_${i + 1}`,

@@ -15,8 +15,16 @@ const STUDENT_NAMES = [
 ];
 
 const SUBJECTS = [
-  "Mathematics", "Science", "English", "Social Studies", "Computer Science",
-  "Physics", "Chemistry", "Biology", "History", "Geography"
+  "Data Structures & Algorithms",
+  "Operating Systems",
+  "Database Management Systems",
+  "Computer Networks",
+  "Software Engineering",
+  "Object-Oriented Programming",
+  "Web Development",
+  "Machine Learning",
+  "Computer Architecture",
+  "Theory of Computation"
 ];
 
 const CLASSES = [
