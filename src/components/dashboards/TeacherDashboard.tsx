@@ -374,25 +374,56 @@ export default function TeacherDashboard() {
               <CardContent>
                 <div className="space-y-2 max-h-96 overflow-y-auto">
                   {atRiskStudents.length > 0 ? (
-                    atRiskStudents.map((student: any, idx: number) => (
-                      <div key={idx} className="border border-red-200 p-3 bg-red-50">
-                        <div className="flex justify-between items-start mb-2">
-                          <div className="flex-1">
-                            <span className="text-sm font-semibold text-gray-900">{student.name}</span>
-                            <span className="text-xs text-gray-600 ml-2">{student.email}</span>
+                    atRiskStudents.map((student: any, idx: number) => {
+                      const suggestions = student.riskLevel === "critical" 
+                        ? [
+                            "Schedule immediate one-on-one meeting",
+                            "Contact parents/guardians urgently",
+                            "Refer to academic counselor",
+                            "Create personalized learning plan",
+                            "Assign peer mentor for support"
+                          ]
+                        : [
+                            "Increase monitoring frequency",
+                            "Provide additional tutoring sessions",
+                            "Set up weekly check-ins",
+                            "Encourage participation in study groups",
+                            "Offer extra credit opportunities"
+                          ];
+                      
+                      return (
+                        <div key={idx} className="border border-red-200 p-3 bg-red-50 rounded-lg">
+                          <div className="flex justify-between items-start mb-2">
+                            <div className="flex-1">
+                              <span className="text-sm font-semibold text-gray-900">{student.name}</span>
+                              <span className="text-xs text-gray-600 ml-2">{student.email}</span>
+                            </div>
+                            <span className={`text-xs font-bold uppercase px-2 py-1 rounded ${
+                              student.riskLevel === "critical" 
+                                ? "bg-red-600 text-white" 
+                                : "bg-orange-600 text-white"
+                            }`}>
+                              {student.riskLevel}
+                            </span>
                           </div>
-                          <span className={`text-xs font-bold uppercase ${
-                            student.riskLevel === "critical" ? "text-red-600" : "text-orange-600"
-                          }`}>
-                            {student.riskLevel}
-                          </span>
+                          <div className="text-xs text-gray-600 space-y-1 mb-2">
+                            <p>Attendance: {student.attendance}% | Grade: {student.overallGrade}%</p>
+                            <p>Dropout Probability: {(student.dropoutProbability * 100).toFixed(1)}%</p>
+                          </div>
+                          <div className="mt-2 pt-2 border-t border-red-300">
+                            <p className="text-xs font-semibold text-gray-900 mb-1">Recommended Actions:</p>
+                            <ul className="text-xs text-gray-700 space-y-0.5">
+                              {suggestions.slice(0, 3).map((suggestion, i) => (
+                                <li key={i} className="flex items-start">
+                                  <span className="text-red-600 mr-1">•</span>
+                                  <span>{suggestion}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
                         </div>
-                        <div className="text-xs text-gray-600 space-y-1">
-                          <p>Attendance: {student.attendance}% | Grade: {student.overallGrade}%</p>
-                          <p>Dropout Probability: {(student.dropoutProbability * 100).toFixed(1)}%</p>
-                        </div>
-                      </div>
-                    ))
+                      );
+                    })
                   ) : (
                     <p className="text-gray-500 text-sm">No at-risk students</p>
                   )}
@@ -541,6 +572,62 @@ export default function TeacherDashboard() {
                     {(displayStudent.dropoutProbability * 100).toFixed(1)}% dropout probability
                   </p>
                 </div>
+                
+                {/* Intervention Suggestions */}
+                {(displayStudent.riskLevel === "high" || displayStudent.riskLevel === "critical") && (
+                  <div className="mt-4 pt-4 border-t border-slate-200">
+                    <h5 className="text-sm font-semibold text-slate-900 mb-2">Recommended Interventions:</h5>
+                    <ul className="text-xs text-slate-700 space-y-1.5">
+                      {displayStudent.riskLevel === "critical" ? (
+                        <>
+                          <li className="flex items-start">
+                            <span className="text-red-600 mr-2 font-bold">1.</span>
+                            <span><strong>Immediate Action:</strong> Schedule urgent meeting with student and parents/guardians</span>
+                          </li>
+                          <li className="flex items-start">
+                            <span className="text-red-600 mr-2 font-bold">2.</span>
+                            <span><strong>Academic Support:</strong> Refer to academic counselor and create personalized learning plan</span>
+                          </li>
+                          <li className="flex items-start">
+                            <span className="text-red-600 mr-2 font-bold">3.</span>
+                            <span><strong>Peer Support:</strong> Assign dedicated peer mentor for daily check-ins</span>
+                          </li>
+                          <li className="flex items-start">
+                            <span className="text-red-600 mr-2 font-bold">4.</span>
+                            <span><strong>Monitoring:</strong> Daily attendance tracking and weekly progress reviews</span>
+                          </li>
+                          <li className="flex items-start">
+                            <span className="text-red-600 mr-2 font-bold">5.</span>
+                            <span><strong>Resources:</strong> Connect with student support services and mental health resources</span>
+                          </li>
+                        </>
+                      ) : (
+                        <>
+                          <li className="flex items-start">
+                            <span className="text-orange-600 mr-2 font-bold">1.</span>
+                            <span><strong>Monitoring:</strong> Increase check-in frequency to twice weekly</span>
+                          </li>
+                          <li className="flex items-start">
+                            <span className="text-orange-600 mr-2 font-bold">2.</span>
+                            <span><strong>Tutoring:</strong> Provide additional tutoring sessions in struggling subjects</span>
+                          </li>
+                          <li className="flex items-start">
+                            <span className="text-orange-600 mr-2 font-bold">3.</span>
+                            <span><strong>Engagement:</strong> Encourage participation in study groups and peer learning</span>
+                          </li>
+                          <li className="flex items-start">
+                            <span className="text-orange-600 mr-2 font-bold">4.</span>
+                            <span><strong>Motivation:</strong> Offer extra credit opportunities and recognize improvements</span>
+                          </li>
+                          <li className="flex items-start">
+                            <span className="text-orange-600 mr-2 font-bold">5.</span>
+                            <span><strong>Communication:</strong> Maintain regular contact with parents about progress</span>
+                          </li>
+                        </>
+                      )}
+                    </ul>
+                  </div>
+                )}
               </div>
 
               {/* Subject Performance */}
