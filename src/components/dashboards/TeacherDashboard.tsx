@@ -10,13 +10,14 @@ import { AlertTriangle, BookOpen, Eye, LogOut, Users, Edit, Save, X } from "luci
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
 import { useAuth } from "@/hooks/use-auth";
-import { useMutation } from "convex/react";
+import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { toast } from "sonner";
 
 export default function TeacherDashboard() {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const currentUser = useQuery(api.users.currentUser);
   const [selectedStudent, setSelectedStudent] = useState<any>(null);
   const [isEditMode, setIsEditMode] = useState(false);
   const [editedStudent, setEditedStudent] = useState<any>(null);
@@ -78,7 +79,7 @@ export default function TeacherDashboard() {
     }));
 
   const data = {
-    teacher: { name: "Sonia Sharma", email: "sonia_sharma@edutrack.ai" },
+    teacher: { name: currentUser?.name || "Teacher", email: currentUser?.email || "teacher@edutrack.ai" },
     subjects: [
       { name: "Data Structures & Algorithms", id: "1" },
       { name: "Operating Systems", id: "2" },
@@ -113,6 +114,14 @@ export default function TeacherDashboard() {
     localStorage.removeItem("username");
     navigate("/login");
   };
+
+  if (!currentUser) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <p className="text-slate-600">Loading...</p>
+      </div>
+    );
+  }
 
   const handleEditClick = () => {
     setIsEditMode(true);

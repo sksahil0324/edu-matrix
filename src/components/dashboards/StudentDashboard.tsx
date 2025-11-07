@@ -6,15 +6,16 @@ import { Award, Brain, Flame, LogOut, Star, TrendingUp, Trophy, Zap } from "luci
 import { useNavigate } from "react-router";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/hooks/use-auth";
-import { useMutation } from "convex/react";
+import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 
 export default function StudentDashboard() {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const currentUser = useQuery(api.users.currentUser);
 
   const data = {
-    student: { name: "Aryan Kumar - 1st Year", email: "aryan_kumar@edutrack.ai" },
+    student: { name: currentUser?.name || "Student", email: currentUser?.email || "student@edutrack.ai" },
     performances: [
       { grades: 85, subject: "Data Structures & Algorithms" },
       { grades: 78, subject: "Operating Systems" },
@@ -53,6 +54,14 @@ export default function StudentDashboard() {
     localStorage.removeItem("username");
     navigate("/login");
   };
+
+  if (!currentUser) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <p className="text-slate-600">Loading...</p>
+      </div>
+    );
+  }
 
   const { student, performances, predictions, gamification, recommendations, challenges } = data;
   const latestPrediction = predictions[0];
