@@ -11,11 +11,11 @@ export default function StudentDashboard() {
   const data = {
     student: { name: "Aryan Kumar - 1st Year", email: "aryan_kumar@edutrack.ai" },
     performances: [
-      { grades: 85, subject: "Mathematics" },
-      { grades: 78, subject: "Science" },
-      { grades: 92, subject: "English" },
-      { grades: 88, subject: "Social Studies" },
-      { grades: 95, subject: "Computer Science" },
+      { grades: 85, subject: "Data Structures & Algorithms" },
+      { grades: 78, subject: "Operating Systems" },
+      { grades: 92, subject: "Database Management Systems" },
+      { grades: 88, subject: "Computer Networks" },
+      { grades: 95, subject: "Software Engineering" },
     ],
     predictions: [
       {
