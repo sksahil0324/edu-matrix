@@ -76,14 +76,20 @@ function Auth({ redirectAfterAuth }: AuthProps = {}) {
       }
 
       // Redirect based on role
-      const roleRedirect = step !== "signIn" && step.role === "teacher" 
-        ? "/teacher/dashboard" 
-        : step !== "signIn" && step.role === "student"
-        ? "/student/dashboard"
-        : "/";
-      
-      const redirect = redirectAfterAuth || roleRedirect;
-      navigate(redirect);
+      // Store the selected role
+      if (step !== "signIn") {
+        localStorage.setItem("userRole", step.role);
+        
+        // Redirect based on role
+        const roleRedirect = step.role === "teacher" 
+          ? "/teacher/dashboard" 
+          : "/student/dashboard";
+        
+        const redirect = redirectAfterAuth || roleRedirect;
+        navigate(redirect);
+      } else {
+        navigate(redirectAfterAuth || "/");
+      }
     } catch (error) {
       console.error("OTP verification error:", error);
 
