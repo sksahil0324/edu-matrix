@@ -18,6 +18,7 @@ export default function TeacherDashboard() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const currentUser = useQuery(api.users.currentUser);
+  const updateStudentPerformance = useMutation(api.students.updateStudentPerformance);
   const [selectedStudent, setSelectedStudent] = useState<any>(null);
   const [isEditMode, setIsEditMode] = useState(false);
   const [editedStudent, setEditedStudent] = useState<any>(null);
@@ -133,8 +134,6 @@ export default function TeacherDashboard() {
     setIsEditMode(false);
     setEditedStudent(null);
   };
-
-  const updateStudentPerformance = useMutation(api.students.updateStudentPerformance);
 
   const handleSaveEdit = async () => {
     if (editedStudent) {
