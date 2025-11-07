@@ -16,23 +16,6 @@ import { toast } from "sonner";
 
 export default function TeacherDashboard() {
   const { user } = useAuth();
-  const initializeUser = useMutation(api.seedUser.initializeNewUser);
-  const [initialized, setInitialized] = useState(false);
-
-  useEffect(() => {
-    const initializeIfNeeded = async () => {
-      if (user && !user.role && !initialized) {
-        try {
-          await initializeUser({ role: "teacher" });
-          setInitialized(true);
-        } catch (error) {
-          console.error("Failed to initialize user:", error);
-        }
-      }
-    };
-    initializeIfNeeded();
-  }, [user, initialized, initializeUser]);
-
   const navigate = useNavigate();
   const [selectedStudent, setSelectedStudent] = useState<any>(null);
   const [isEditMode, setIsEditMode] = useState(false);

@@ -11,23 +11,6 @@ import { api } from "@/convex/_generated/api";
 
 export default function StudentDashboard() {
   const { user } = useAuth();
-  const initializeUser = useMutation(api.seedUser.initializeNewUser);
-  const [initialized, setInitialized] = useState(false);
-
-  useEffect(() => {
-    const initializeIfNeeded = async () => {
-      if (user && !user.role && !initialized) {
-        try {
-          await initializeUser({ role: "student" });
-          setInitialized(true);
-        } catch (error) {
-          console.error("Failed to initialize user:", error);
-        }
-      }
-    };
-    initializeIfNeeded();
-  }, [user, initialized, initializeUser]);
-
   const navigate = useNavigate();
 
   const data = {
