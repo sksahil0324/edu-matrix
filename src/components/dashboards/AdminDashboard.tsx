@@ -205,29 +205,55 @@ export default function AdminDashboard() {
           </motion.div>
         </div>
 
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6 }} className="mt-6">
-          <Card className="border-slate-200 bg-white card-shadow">
-            <CardHeader>
-              <CardTitle className="text-indigo-600">Student List</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-2 max-h-96 overflow-y-auto">
-                {students.length > 0 ? (
-                  students.map((student, idx) => (
-                    <div key={idx} className="border border-slate-200 p-3 bg-slate-50 rounded-lg">
-                      <div className="flex justify-between items-center">
-                        <span className="text-slate-700 font-medium">{student.name || "Unknown"}</span>
-                        <span className="text-xs text-slate-500">{student.email || "No email"}</span>
+        <div className="grid lg:grid-cols-2 gap-6 mt-6">
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6 }}>
+            <Card className="border-slate-200 bg-white card-shadow">
+              <CardHeader>
+                <CardTitle className="text-indigo-600">Teacher List</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-2 max-h-96 overflow-y-auto">
+                  {teachers.length > 0 ? (
+                    teachers.map((teacher, idx) => (
+                      <div key={idx} className="border border-slate-200 p-3 bg-slate-50 rounded-lg">
+                        <div className="flex justify-between items-center">
+                          <span className="text-slate-700 font-medium">{teacher.name || "Unknown"}</span>
+                          <span className="text-xs text-slate-500">{teacher.email || "No email"}</span>
+                        </div>
                       </div>
-                    </div>
-                  ))
-                ) : (
-                  <p className="text-slate-500 text-sm">No students found</p>
-                )}
-              </div>
-            </CardContent>
-          </Card>
-        </motion.div>
+                    ))
+                  ) : (
+                    <p className="text-slate-500 text-sm">No teachers found</p>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
+
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.7 }}>
+            <Card className="border-slate-200 bg-white card-shadow">
+              <CardHeader>
+                <CardTitle className="text-indigo-600">Student List</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-2 max-h-96 overflow-y-auto">
+                  {students.length > 0 ? (
+                    students.map((student, idx) => (
+                      <div key={idx} className="border border-slate-200 p-3 bg-slate-50 rounded-lg">
+                        <div className="flex justify-between items-center">
+                          <span className="text-slate-700 font-medium">{student.name || "Unknown"}</span>
+                          <span className="text-xs text-slate-500">{student.email || "No email"}</span>
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <p className="text-slate-500 text-sm">No students found</p>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
+        </div>
       </div>
     </div>
   );
