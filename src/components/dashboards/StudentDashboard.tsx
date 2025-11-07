@@ -63,8 +63,41 @@ export default function StudentDashboard() {
     );
   }
 
-  const { student, performances, predictions, gamification, recommendations, challenges } = data;
+  const { student, performances, predictions, gamification, challenges } = data;
   const latestPrediction = predictions[0];
+
+  // Generate recommendations based on subject performance
+  const generateRecommendations = () => {
+    const sortedPerformances = [...performances].sort((a, b) => a.grades - b.grades);
+    const recs = [];
+    
+    // Recommend focus on lowest performing subjects
+    if (sortedPerformances[0].grades < 75) {
+      recs.push({
+        message: `Focus on improving ${sortedPerformances[0].subject} (${sortedPerformances[0].grades}%)`,
+        priority: 1,
+      });
+    }
+    if (sortedPerformances[1] && sortedPerformances[1].grades < 80) {
+      recs.push({
+        message: `Strengthen ${sortedPerformances[1].subject} (${sortedPerformances[1].grades}%)`,
+        priority: 2,
+      });
+    }
+    
+    // Recommend maintaining high performance
+    const topPerformer = sortedPerformances[sortedPerformances.length - 1];
+    if (topPerformer.grades >= 90) {
+      recs.push({
+        message: `Maintain your excellent performance in ${topPerformer.subject}`,
+        priority: 3,
+      });
+    }
+    
+    return recs.length > 0 ? recs : [{ message: "Keep up the great work!", priority: 1 }];
+  };
+
+  const dynamicRecommendations = generateRecommendations();
 
   const getRiskColor = (level: string) => {
     switch (level) {
@@ -257,8 +290,8 @@ export default function StudentDashboard() {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-3">
-                    {recommendations.length > 0 ? (
-                      recommendations.map((rec, idx) => (
+                    {dynamicRecommendations.length > 0 ? (
+                      dynamicRecommendations.map((rec, idx) => (
                         <div key={idx} className="border border-slate-200 p-3 bg-slate-50 rounded-lg">
                           <p className="text-sm text-slate-700">{rec.message}</p>
                           <p className="text-xs text-slate-500 mt-1">Priority: {rec.priority}</p>
