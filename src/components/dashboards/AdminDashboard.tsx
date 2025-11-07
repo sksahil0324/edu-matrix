@@ -12,83 +12,86 @@ export default function AdminDashboard() {
   const [selectedStudent, setSelectedStudent] = useState<any>(null);
   const [selectedTeacher, setSelectedTeacher] = useState<any>(null);
 
-  const classes = [
-    { name: "1st Year", year: 1, section: "A" },
-    { name: "2nd Year", year: 2, section: "A" },
-    { name: "3rd Year", year: 3, section: "A" },
-    { name: "4th Year", year: 4, section: "A" },
-  ];
-
+  // Mock data for demo - represents dataset from Convex
   const students = Array.from({ length: 150 }, (_, i) => {
-    const attendance = Math.floor(Math.random() * 30) + 70;
-    const performances = [
-      { subject: "Data Structures & Algorithms", grade: Math.floor(Math.random() * 40) + 60 },
-      { subject: "Operating Systems", grade: Math.floor(Math.random() * 40) + 60 },
-      { subject: "Database Management Systems", grade: Math.floor(Math.random() * 40) + 60 },
-      { subject: "Computer Networks", grade: Math.floor(Math.random() * 40) + 60 },
-      { subject: "Software Engineering", grade: Math.floor(Math.random() * 40) + 60 },
-    ];
-    const overallGrade = Math.floor(performances.reduce((sum, p) => sum + p.grade, 0) / performances.length);
-    
-    // Calculate risk based on actual data
-    const attendanceScore = attendance / 100;
-    const gradeScore = overallGrade / 100;
-    const performanceScore = (attendanceScore + gradeScore) / 2;
-    
-    let riskLevel: "low" | "medium" | "high" | "critical";
-    let dropoutProbability: number;
-    
-    if (performanceScore >= 0.85) {
-      riskLevel = "low";
-      dropoutProbability = 0.05 + Math.random() * 0.15;
-    } else if (performanceScore >= 0.75) {
-      riskLevel = "medium";
-      dropoutProbability = 0.25 + Math.random() * 0.20;
-    } else if (performanceScore >= 0.65) {
-      riskLevel = "high";
-      dropoutProbability = 0.50 + Math.random() * 0.25;
-    } else {
-      riskLevel = "critical";
-      dropoutProbability = 0.75 + Math.random() * 0.20;
-    }
-    
-    return {
-      name: `Student ${i + 1}`,
-      email: `student${i + 1}@edutrack.ai`,
-      attendance,
-      overallGrade,
-      riskLevel,
-      dropoutProbability,
-      performances,
-      gamification: {
-        level: Math.floor(Math.random() * 20) + 1,
-        xp: Math.floor(Math.random() * 15000),
-        streak: Math.floor(Math.random() * 30),
-      },
-    };
-  });
+      const attendance = Math.floor(Math.random() * 30) + 70;
+      const performances = [
+        { subject: "Data Structures & Algorithms", grade: Math.floor(Math.random() * 40) + 60 },
+        { subject: "Operating Systems", grade: Math.floor(Math.random() * 40) + 60 },
+        { subject: "Database Management Systems", grade: Math.floor(Math.random() * 40) + 60 },
+        { subject: "Computer Networks", grade: Math.floor(Math.random() * 40) + 60 },
+        { subject: "Software Engineering", grade: Math.floor(Math.random() * 40) + 60 },
+      ];
+      const overallGrade = Math.floor(performances.reduce((sum, p) => sum + p.grade, 0) / performances.length);
+      
+      // Calculate risk based on actual data
+      const attendanceScore = attendance / 100;
+      const gradeScore = overallGrade / 100;
+      const performanceScore = (attendanceScore + gradeScore) / 2;
+      
+      let riskLevel: "low" | "medium" | "high" | "critical";
+      let dropoutProbability: number;
+      
+      if (performanceScore >= 0.85) {
+        riskLevel = "low";
+        dropoutProbability = 0.05 + Math.random() * 0.15;
+      } else if (performanceScore >= 0.75) {
+        riskLevel = "medium";
+        dropoutProbability = 0.25 + Math.random() * 0.20;
+      } else if (performanceScore >= 0.65) {
+        riskLevel = "high";
+        dropoutProbability = 0.50 + Math.random() * 0.25;
+      } else {
+        riskLevel = "critical";
+        dropoutProbability = 0.75 + Math.random() * 0.20;
+      }
+      
+      return {
+        name: `Student ${i + 1}`,
+        email: `student${i + 1}@edutrack.ai`,
+        attendance,
+        overallGrade,
+        riskLevel,
+        dropoutProbability,
+        performances,
+        gamification: {
+          level: Math.floor(Math.random() * 20) + 1,
+          xp: Math.floor(Math.random() * 15000),
+          streak: Math.floor(Math.random() * 30),
+        },
+      };
+    });
 
   const teachers = Array.from({ length: 60 }, (_, i) => ({
-    name: `Teacher ${i + 1}`,
-    email: `teacher${i + 1}@edutrack.ai`,
-    subjects: ["Data Structures & Algorithms", "Operating Systems", "Database Management Systems"].slice(0, Math.floor(Math.random() * 3) + 1),
-    studentsCount: Math.floor(Math.random() * 40) + 30,
-    experience: Math.floor(Math.random() * 15) + 1,
-  }));
+      name: `Teacher ${i + 1}`,
+      email: `teacher${i + 1}@edutrack.ai`,
+      subjects: ["Data Structures & Algorithms", "Operating Systems", "Database Management Systems"].slice(0, Math.floor(Math.random() * 3) + 1),
+      studentsCount: Math.floor(Math.random() * 40) + 30,
+      experience: Math.floor(Math.random() * 15) + 1,
+    }));
 
-  const predictions = students.slice(0, 8).map((student) => ({
-    modelType: "Temporal",
-    riskLevel: student.riskLevel,
-    dropoutProbability: student.dropoutProbability,
-  }));
-
-  const metrics = [
-    { modelType: "Temporal", weekNumber: 12, accuracy: 0.96, f1Score: 0.94, rocAuc: 0.97 },
-    { modelType: "Holistic", weekNumber: 12, accuracy: 0.93, f1Score: 0.91, rocAuc: 0.94 },
-    { modelType: "Hybrid", weekNumber: 12, accuracy: 0.91, f1Score: 0.89, rocAuc: 0.92 },
-    { modelType: "ML-Random Forest", weekNumber: 12, accuracy: 0.88, f1Score: 0.86, rocAuc: 0.90 },
-    { modelType: "Rule-Based", weekNumber: 12, accuracy: 0.75, f1Score: 0.72, rocAuc: 0.78 },
-  ];
+  const dashboardData = {
+    classes: [
+      { name: "1st Year", year: 1, section: "A" },
+      { name: "2nd Year", year: 2, section: "A" },
+      { name: "3rd Year", year: 3, section: "A" },
+      { name: "4th Year", year: 4, section: "A" },
+    ],
+    students,
+    teachers,
+    predictions: students.slice(0, 8).map((student: any) => ({
+      modelType: "Temporal",
+      riskLevel: student.riskLevel,
+      dropoutProbability: student.dropoutProbability,
+    })),
+    metrics: [
+      { modelType: "Temporal", weekNumber: 12, accuracy: 0.96, f1Score: 0.94, rocAuc: 0.97 },
+      { modelType: "Holistic", weekNumber: 12, accuracy: 0.93, f1Score: 0.91, rocAuc: 0.94 },
+      { modelType: "Hybrid", weekNumber: 12, accuracy: 0.91, f1Score: 0.89, rocAuc: 0.92 },
+      { modelType: "ML-Random Forest", weekNumber: 12, accuracy: 0.88, f1Score: 0.86, rocAuc: 0.90 },
+      { modelType: "Rule-Based", weekNumber: 12, accuracy: 0.75, f1Score: 0.72, rocAuc: 0.78 },
+    ],
+  };
 
   const handleLogout = () => {
     localStorage.removeItem("userRole");
@@ -115,6 +118,8 @@ export default function AdminDashboard() {
       default: return "bg-blue-50 border-blue-200";
     }
   };
+
+  const { classes, predictions, metrics } = dashboardData;
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white">
@@ -210,7 +215,7 @@ export default function AdminDashboard() {
               <CardContent>
                 <div className="space-y-3">
                   {metrics.length > 0 ? (
-                    metrics.map((metric, idx) => (
+                    metrics.map((metric: any, idx: number) => (
                       <div key={idx} className="border border-slate-200 p-3 bg-slate-50 rounded-lg">
                         <div className="flex justify-between items-center mb-2">
                           <span className="text-sm font-bold text-blue-600">{metric.modelType}</span>
@@ -247,7 +252,7 @@ export default function AdminDashboard() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-2 max-h-96 overflow-y-auto">
-                  {predictions.slice(0, 10).map((pred, idx) => (
+                  {predictions.slice(0, 10).map((pred: any, idx: number) => (
                     <div key={idx} className="border border-slate-200 p-3 bg-slate-50 rounded-lg">
                       <div className="flex justify-between items-start mb-1">
                         <span className="text-xs text-slate-600">{pred.modelType}</span>
@@ -278,7 +283,7 @@ export default function AdminDashboard() {
               <CardContent>
                 <div className="space-y-2 max-h-96 overflow-y-auto">
                   {teachers.length > 0 ? (
-                    teachers.map((teacher, idx) => (
+                    teachers.map((teacher: any, idx: number) => (
                       <div key={idx} className="border border-slate-200 p-3 bg-slate-50 rounded-lg flex justify-between items-center">
                         <div className="flex-1">
                           <span className="text-slate-700 font-medium">{teacher.name || "Unknown"}</span>
@@ -310,7 +315,7 @@ export default function AdminDashboard() {
               <CardContent>
                 <div className="space-y-2 max-h-96 overflow-y-auto">
                   {students.length > 0 ? (
-                    students.map((student, idx) => (
+                    students.map((student: any, idx: number) => (
                       <div key={idx} className="border border-slate-200 p-3 bg-slate-50 rounded-lg flex justify-between items-center">
                         <div className="flex-1">
                           <span className="text-slate-700 font-medium">{student.name || "Unknown"}</span>
