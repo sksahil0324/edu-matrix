@@ -70,32 +70,27 @@ function Auth({ redirectAfterAuth }: AuthProps = {}) {
 
       console.log("signed in");
 
-      // Store the selected role
+      // Store the selected role and redirect
       if (step !== "signIn") {
-        localStorage.setItem("userRole", step.role);
-      }
-
-      // Redirect based on role
-      // Store the selected role
-      if (step !== "signIn") {
-        localStorage.setItem("userRole", step.role);
+        const roleToStore = step.role;
+        localStorage.setItem("userRole", roleToStore);
         
-        // Redirect based on role
-        const roleRedirect = step.role === "teacher" 
-          ? "/teacher/dashboard" 
-          : "/student/dashboard";
-        
-        const redirect = redirectAfterAuth || roleRedirect;
-        navigate(redirect);
+        // Small delay to ensure localStorage is written
+        setTimeout(() => {
+          const roleRedirect = roleToStore === "teacher" 
+            ? "/teacher/dashboard" 
+            : "/student/dashboard";
+          
+          const redirect = redirectAfterAuth || roleRedirect;
+          navigate(redirect);
+        }, 100);
       } else {
         navigate(redirectAfterAuth || "/");
       }
     } catch (error) {
       console.error("OTP verification error:", error);
-
       setError("The verification code you entered is incorrect.");
       setIsLoading(false);
-
       setOtp("");
     }
   };
@@ -109,15 +104,18 @@ function Auth({ redirectAfterAuth }: AuthProps = {}) {
       console.log("Anonymous sign in successful");
       
       // Store guest role
-      localStorage.setItem("userRole", selectedRole);
+      const roleToStore = selectedRole;
+      localStorage.setItem("userRole", roleToStore);
       
-      // Redirect based on selected role
-      const roleRedirect = selectedRole === "teacher" 
-        ? "/teacher/dashboard" 
-        : "/student/dashboard";
-      
-      const redirect = redirectAfterAuth || roleRedirect;
-      navigate(redirect);
+      // Small delay to ensure localStorage is written
+      setTimeout(() => {
+        const roleRedirect = roleToStore === "teacher" 
+          ? "/teacher/dashboard" 
+          : "/student/dashboard";
+        
+        const redirect = redirectAfterAuth || roleRedirect;
+        navigate(redirect);
+      }, 100);
     } catch (error) {
       console.error("Guest login error:", error);
       console.error("Error details:", JSON.stringify(error, null, 2));
