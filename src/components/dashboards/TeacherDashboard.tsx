@@ -30,7 +30,7 @@ export default function TeacherDashboard() {
       ];
       const overallGrade = Math.floor(performances.reduce((sum, p) => sum + p.grade, 0) / performances.length);
       
-      // Calculate risk based on actual data
+      // Calculate risk based on actual data using Temporal model thresholds
       const attendanceScore = attendance / 100;
       const gradeScore = overallGrade / 100;
       const performanceScore = (attendanceScore + gradeScore) / 2;
@@ -38,18 +38,19 @@ export default function TeacherDashboard() {
       let riskLevel: "low" | "medium" | "high" | "critical";
       let dropoutProbability: number;
       
+      // Use consistent Temporal model calculation (no randomness for consistency)
       if (performanceScore >= 0.85) {
         riskLevel = "low";
-        dropoutProbability = 0.05 + Math.random() * 0.15; // 5-20%
+        dropoutProbability = 0.10; // Fixed value for consistency
       } else if (performanceScore >= 0.75) {
         riskLevel = "medium";
-        dropoutProbability = 0.25 + Math.random() * 0.20; // 25-45%
+        dropoutProbability = 0.30; // Fixed value for consistency
       } else if (performanceScore >= 0.65) {
         riskLevel = "high";
-        dropoutProbability = 0.50 + Math.random() * 0.25; // 50-75%
+        dropoutProbability = 0.60; // Fixed value for consistency
       } else {
         riskLevel = "critical";
-        dropoutProbability = 0.75 + Math.random() * 0.20; // 75-95%
+        dropoutProbability = 0.85; // Fixed value for consistency
       }
       
       return {
@@ -255,7 +256,7 @@ export default function TeacherDashboard() {
         modelName: "Temporal",
         accuracy: 96,
         riskLevel: performanceScore >= 0.85 ? "low" : performanceScore >= 0.75 ? "medium" : performanceScore >= 0.65 ? "high" : "critical",
-        dropoutProbability: performanceScore >= 0.85 ? 0.05 + Math.random() * 0.15 : performanceScore >= 0.75 ? 0.25 + Math.random() * 0.20 : performanceScore >= 0.65 ? 0.50 + Math.random() * 0.25 : 0.75 + Math.random() * 0.20,
+        dropoutProbability: performanceScore >= 0.85 ? 0.10 : performanceScore >= 0.75 ? 0.30 : performanceScore >= 0.65 ? 0.60 : 0.85,
         explanation: "Most accurate model using temporal analysis. Tracks week-by-week evolution and trend forecasting with 96% accuracy.",
       },
     ];
