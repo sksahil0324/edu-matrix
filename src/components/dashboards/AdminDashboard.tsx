@@ -1,11 +1,16 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Progress } from "@/components/ui/progress";
 import { motion } from "framer-motion";
-import { BarChart3, BookOpen, LogOut, TrendingUp, Users } from "lucide-react";
+import { BarChart3, BookOpen, Eye, LogOut, TrendingUp, Users } from "lucide-react";
+import { useState } from "react";
 import { useNavigate } from "react-router";
 
 export default function AdminDashboard() {
   const navigate = useNavigate();
+  const [selectedStudent, setSelectedStudent] = useState<any>(null);
+  const [selectedTeacher, setSelectedTeacher] = useState<any>(null);
 
   const dashboardData = {
     classes: [
@@ -17,10 +22,29 @@ export default function AdminDashboard() {
     students: Array.from({ length: 150 }, (_, i) => ({
       name: `Student ${i + 1}`,
       email: `student${i + 1}@edutrack.ai`,
+      attendance: Math.floor(Math.random() * 30) + 70,
+      overallGrade: Math.floor(Math.random() * 40) + 60,
+      riskLevel: ["low", "medium", "high", "critical"][Math.floor(Math.random() * 4)] as "low" | "medium" | "high" | "critical",
+      dropoutProbability: Math.random(),
+      performances: [
+        { subject: "Data Structures & Algorithms", grade: Math.floor(Math.random() * 40) + 60 },
+        { subject: "Operating Systems", grade: Math.floor(Math.random() * 40) + 60 },
+        { subject: "Database Management Systems", grade: Math.floor(Math.random() * 40) + 60 },
+        { subject: "Computer Networks", grade: Math.floor(Math.random() * 40) + 60 },
+        { subject: "Software Engineering", grade: Math.floor(Math.random() * 40) + 60 },
+      ],
+      gamification: {
+        level: Math.floor(Math.random() * 20) + 1,
+        xp: Math.floor(Math.random() * 15000),
+        streak: Math.floor(Math.random() * 30),
+      },
     })),
     teachers: Array.from({ length: 60 }, (_, i) => ({
       name: `Teacher ${i + 1}`,
       email: `teacher${i + 1}@edutrack.ai`,
+      subjects: ["Data Structures & Algorithms", "Operating Systems", "Database Management Systems"].slice(0, Math.floor(Math.random() * 3) + 1),
+      studentsCount: Math.floor(Math.random() * 40) + 30,
+      experience: Math.floor(Math.random() * 15) + 1,
     })),
     predictions: [
       { modelType: "Holistic", riskLevel: "low", dropoutProbability: 0.15 },
@@ -45,6 +69,26 @@ export default function AdminDashboard() {
     localStorage.removeItem("userRole");
     localStorage.removeItem("username");
     navigate("/login");
+  };
+
+  const getRiskColor = (level: string) => {
+    switch (level) {
+      case "low": return "text-emerald-600";
+      case "medium": return "text-yellow-600";
+      case "high": return "text-orange-600";
+      case "critical": return "text-red-600";
+      default: return "text-blue-600";
+    }
+  };
+
+  const getRiskBgColor = (level: string) => {
+    switch (level) {
+      case "low": return "bg-emerald-50 border-emerald-200";
+      case "medium": return "bg-yellow-50 border-yellow-200";
+      case "high": return "bg-orange-50 border-orange-200";
+      case "critical": return "bg-red-50 border-red-200";
+      default: return "bg-blue-50 border-blue-200";
+    }
   };
 
   const { classes, students, teachers, predictions, metrics } = dashboardData;
@@ -212,11 +256,19 @@ export default function AdminDashboard() {
                 <div className="space-y-2 max-h-96 overflow-y-auto">
                   {teachers.length > 0 ? (
                     teachers.map((teacher, idx) => (
-                      <div key={idx} className="border border-slate-200 p-3 bg-slate-50 rounded-lg">
-                        <div className="flex justify-between items-center">
+                      <div key={idx} className="border border-slate-200 p-3 bg-slate-50 rounded-lg flex justify-between items-center">
+                        <div className="flex-1">
                           <span className="text-slate-700 font-medium">{teacher.name || "Unknown"}</span>
-                          <span className="text-xs text-slate-500">{teacher.email || "No email"}</span>
+                          <span className="text-xs text-slate-500 ml-2">{teacher.email || "No email"}</span>
                         </div>
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          onClick={() => setSelectedTeacher(teacher)}
+                          className="text-indigo-600 hover:text-indigo-700 hover:bg-indigo-100"
+                        >
+                          <Eye className="h-4 w-4" />
+                        </Button>
                       </div>
                     ))
                   ) : (
@@ -236,11 +288,19 @@ export default function AdminDashboard() {
                 <div className="space-y-2 max-h-96 overflow-y-auto">
                   {students.length > 0 ? (
                     students.map((student, idx) => (
-                      <div key={idx} className="border border-slate-200 p-3 bg-slate-50 rounded-lg">
-                        <div className="flex justify-between items-center">
+                      <div key={idx} className="border border-slate-200 p-3 bg-slate-50 rounded-lg flex justify-between items-center">
+                        <div className="flex-1">
                           <span className="text-slate-700 font-medium">{student.name || "Unknown"}</span>
-                          <span className="text-xs text-slate-500">{student.email || "No email"}</span>
+                          <span className="text-xs text-slate-500 ml-2">{student.email || "No email"}</span>
                         </div>
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          onClick={() => setSelectedStudent(student)}
+                          className="text-blue-600 hover:text-blue-700 hover:bg-blue-100"
+                        >
+                          <Eye className="h-4 w-4" />
+                        </Button>
                       </div>
                     ))
                   ) : (
@@ -252,6 +312,143 @@ export default function AdminDashboard() {
           </motion.div>
         </div>
       </div>
+
+      {/* Student Details Dialog */}
+      <Dialog open={!!selectedStudent} onOpenChange={() => setSelectedStudent(null)}>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="text-2xl font-bold text-blue-600">Student Details</DialogTitle>
+          </DialogHeader>
+          
+          {selectedStudent && (
+            <div className="space-y-6">
+              {/* Basic Info */}
+              <div className={`border rounded-lg p-4 ${getRiskBgColor(selectedStudent.riskLevel)}`}>
+                <h3 className="font-bold text-lg mb-2">{selectedStudent.name}</h3>
+                <p className="text-sm text-gray-600 mb-3">{selectedStudent.email}</p>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <p className="text-xs text-gray-600">Attendance</p>
+                    <p className="text-2xl font-bold text-blue-600">{selectedStudent.attendance}%</p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-600">Overall Grade</p>
+                    <p className="text-2xl font-bold text-emerald-600">{selectedStudent.overallGrade}%</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Risk Assessment */}
+              <div className="border border-slate-200 rounded-lg p-4 bg-white">
+                <h4 className="font-semibold mb-3 text-slate-900">Dropout Risk Assessment</h4>
+                <div className="space-y-2">
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-gray-600">Risk Level</span>
+                    <span className={`font-bold uppercase text-sm ${getRiskColor(selectedStudent.riskLevel)}`}>
+                      {selectedStudent.riskLevel}
+                    </span>
+                  </div>
+                  <Progress value={selectedStudent.dropoutProbability * 100} className="h-2" />
+                  <p className="text-xs text-gray-600">
+                    {(selectedStudent.dropoutProbability * 100).toFixed(1)}% dropout probability
+                  </p>
+                </div>
+              </div>
+
+              {/* Subject Performance */}
+              <div className="border border-slate-200 rounded-lg p-4 bg-white">
+                <h4 className="font-semibold mb-3 text-slate-900">Subject Performance</h4>
+                <div className="space-y-3">
+                  {selectedStudent.performances.map((perf: any, idx: number) => (
+                    <div key={idx} className="space-y-1">
+                      <div className="flex justify-between text-sm">
+                        <span className="text-gray-600">{perf.subject}</span>
+                        <span className="font-bold text-blue-600">{perf.grade}%</span>
+                      </div>
+                      <Progress value={perf.grade} className="h-2" />
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Gamification Stats */}
+              <div className="border border-slate-200 rounded-lg p-4 bg-white">
+                <h4 className="font-semibold mb-3 text-slate-900">Engagement & Progress</h4>
+                <div className="grid grid-cols-3 gap-4">
+                  <div className="text-center">
+                    <p className="text-xs text-gray-600">Level</p>
+                    <p className="text-2xl font-bold text-blue-600">{selectedStudent.gamification.level}</p>
+                  </div>
+                  <div className="text-center">
+                    <p className="text-xs text-gray-600">XP</p>
+                    <p className="text-2xl font-bold text-emerald-600">{selectedStudent.gamification.xp}</p>
+                  </div>
+                  <div className="text-center">
+                    <p className="text-xs text-gray-600">Streak</p>
+                    <p className="text-2xl font-bold text-orange-600">{selectedStudent.gamification.streak}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Teacher Details Dialog */}
+      <Dialog open={!!selectedTeacher} onOpenChange={() => setSelectedTeacher(null)}>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="text-2xl font-bold text-indigo-600">Teacher Details</DialogTitle>
+          </DialogHeader>
+          
+          {selectedTeacher && (
+            <div className="space-y-6">
+              {/* Basic Info */}
+              <div className="border border-indigo-200 rounded-lg p-4 bg-indigo-50">
+                <h3 className="font-bold text-lg mb-2">{selectedTeacher.name}</h3>
+                <p className="text-sm text-gray-600 mb-3">{selectedTeacher.email}</p>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <p className="text-xs text-gray-600">Students</p>
+                    <p className="text-2xl font-bold text-indigo-600">{selectedTeacher.studentsCount}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-600">Experience</p>
+                    <p className="text-2xl font-bold text-emerald-600">{selectedTeacher.experience} years</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Subjects Taught */}
+              <div className="border border-slate-200 rounded-lg p-4 bg-white">
+                <h4 className="font-semibold mb-3 text-slate-900">Subjects Taught</h4>
+                <div className="space-y-2">
+                  {selectedTeacher.subjects.map((subject: string, idx: number) => (
+                    <div key={idx} className="border border-slate-200 p-3 bg-slate-50 rounded-lg">
+                      <p className="text-sm text-slate-700 font-medium">{subject}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Additional Info */}
+              <div className="border border-slate-200 rounded-lg p-4 bg-white">
+                <h4 className="font-semibold mb-3 text-slate-900">Teaching Statistics</h4>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="text-center p-3 bg-blue-50 rounded-lg">
+                    <p className="text-xs text-gray-600 mb-1">Total Subjects</p>
+                    <p className="text-2xl font-bold text-blue-600">{selectedTeacher.subjects.length}</p>
+                  </div>
+                  <div className="text-center p-3 bg-emerald-50 rounded-lg">
+                    <p className="text-xs text-gray-600 mb-1">Active Students</p>
+                    <p className="text-2xl font-bold text-emerald-600">{selectedTeacher.studentsCount}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
