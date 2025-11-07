@@ -2,14 +2,19 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Progress } from "@/components/ui/progress";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { motion } from "framer-motion";
-import { AlertTriangle, BookOpen, Eye, LogOut, Users } from "lucide-react";
+import { AlertTriangle, BookOpen, Eye, LogOut, Users, Edit, Save, X } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router";
+import { toast } from "sonner";
 
 export default function TeacherDashboard() {
   const navigate = useNavigate();
   const [selectedStudent, setSelectedStudent] = useState<any>(null);
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [editedStudent, setEditedStudent] = useState<any>(null);
 
   // Mock data for demo - represents dataset from Convex
   const data = {
@@ -64,6 +69,42 @@ export default function TeacherDashboard() {
     navigate("/login");
   };
 
+  const handleEditClick = () => {
+    setIsEditMode(true);
+    setEditedStudent({ ...selectedStudent });
+  };
+
+  const handleCancelEdit = () => {
+    setIsEditMode(false);
+    setEditedStudent(null);
+  };
+
+  const handleSaveEdit = () => {
+    // Update the student data
+    if (editedStudent) {
+      // In a real app, this would call a mutation to update the database
+      setSelectedStudent(editedStudent);
+      setIsEditMode(false);
+      toast.success("Student details updated successfully!");
+    }
+  };
+
+  const handleInputChange = (field: string, value: any) => {
+    setEditedStudent((prev: any) => ({
+      ...prev,
+      [field]: value,
+    }));
+  };
+
+  const handlePerformanceChange = (index: number, value: number) => {
+    setEditedStudent((prev: any) => ({
+      ...prev,
+      performances: prev.performances.map((perf: any, idx: number) =>
+        idx === index ? { ...perf, grade: value } : perf
+      ),
+    }));
+  };
+
   const getRiskColor = (level: string) => {
     switch (level) {
       case "low": return "text-emerald-600";
@@ -87,6 +128,8 @@ export default function TeacherDashboard() {
   const { teacher, subjects, students, predictions } = data;
 
   const atRiskStudents = predictions.filter(p => p.riskLevel === "high" || p.riskLevel === "critical");
+
+  const displayStudent = isEditMode ? editedStudent : selectedStudent;
 
   return (
     <div className="min-h-screen bg-white">
@@ -213,28 +256,120 @@ export default function TeacherDashboard() {
       </div>
 
       {/* Student Details Dialog */}
-      <Dialog open={!!selectedStudent} onOpenChange={() => setSelectedStudent(null)}>
+      <Dialog open={!!selectedStudent} onOpenChange={() => {
+        setSelectedStudent(null);
+        setIsEditMode(false);
+        setEditedStudent(null);
+      }}>
         <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle className="text-2xl font-bold text-blue-600">Student Details</DialogTitle>
+            <div className="flex items-center justify-between">
+              <DialogTitle className="text-2xl font-bold text-blue-600">
+                {isEditMode ? "Edit Student Details" : "Student Details"}
+              </DialogTitle>
+              <div className="flex gap-2">
+                {!isEditMode ? (
+                  <Button
+                    size="sm"
+                    onClick={handleEditClick}
+                    className="bg-blue-600 hover:bg-blue-700 text-white"
+                  >
+                    <Edit className="h-4 w-4 mr-2" />
+                    Edit
+                  </Button>
+                ) : (
+                  <>
+                    <Button
+                      size="sm"
+                      onClick={handleSaveEdit}
+                      className="bg-emerald-600 hover:bg-emerald-700 text-white"
+                    >
+                      <Save className="h-4 w-4 mr-2" />
+                      Save
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={handleCancelEdit}
+                      className="border-red-300 text-red-600 hover:bg-red-50"
+                    >
+                      <X className="h-4 w-4 mr-2" />
+                      Cancel
+                    </Button>
+                  </>
+                )}
+              </div>
+            </div>
           </DialogHeader>
           
-          {selectedStudent && (
+          {displayStudent && (
             <div className="space-y-6">
               {/* Basic Info */}
-              <div className={`border rounded-lg p-4 ${getRiskBgColor(selectedStudent.riskLevel)}`}>
-                <h3 className="font-bold text-lg mb-2">{selectedStudent.name}</h3>
-                <p className="text-sm text-gray-600 mb-3">{selectedStudent.email}</p>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <p className="text-xs text-gray-600">Attendance</p>
-                    <p className="text-2xl font-bold text-blue-600">{selectedStudent.attendance}%</p>
+              <div className={`border rounded-lg p-4 ${getRiskBgColor(displayStudent.riskLevel)}`}>
+                {isEditMode ? (
+                  <div className="space-y-3">
+                    <div>
+                      <Label htmlFor="name" className="text-sm font-semibold">Name</Label>
+                      <Input
+                        id="name"
+                        value={editedStudent.name}
+                        onChange={(e) => handleInputChange("name", e.target.value)}
+                        className="mt-1"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="email" className="text-sm font-semibold">Email</Label>
+                      <Input
+                        id="email"
+                        type="email"
+                        value={editedStudent.email}
+                        onChange={(e) => handleInputChange("email", e.target.value)}
+                        className="mt-1"
+                      />
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <Label htmlFor="attendance" className="text-sm font-semibold">Attendance (%)</Label>
+                        <Input
+                          id="attendance"
+                          type="number"
+                          min="0"
+                          max="100"
+                          value={editedStudent.attendance}
+                          onChange={(e) => handleInputChange("attendance", parseInt(e.target.value))}
+                          className="mt-1"
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="overallGrade" className="text-sm font-semibold">Overall Grade (%)</Label>
+                        <Input
+                          id="overallGrade"
+                          type="number"
+                          min="0"
+                          max="100"
+                          value={editedStudent.overallGrade}
+                          onChange={(e) => handleInputChange("overallGrade", parseInt(e.target.value))}
+                          className="mt-1"
+                        />
+                      </div>
+                    </div>
                   </div>
-                  <div>
-                    <p className="text-xs text-gray-600">Overall Grade</p>
-                    <p className="text-2xl font-bold text-emerald-600">{selectedStudent.overallGrade}%</p>
-                  </div>
-                </div>
+                ) : (
+                  <>
+                    <h3 className="font-bold text-lg mb-2">{displayStudent.name}</h3>
+                    <p className="text-sm text-gray-600 mb-3">{displayStudent.email}</p>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <p className="text-xs text-gray-600">Attendance</p>
+                        <p className="text-2xl font-bold text-blue-600">{displayStudent.attendance}%</p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-gray-600">Overall Grade</p>
+                        <p className="text-2xl font-bold text-emerald-600">{displayStudent.overallGrade}%</p>
+                      </div>
+                    </div>
+                  </>
+                )}
               </div>
 
               {/* Risk Assessment */}
@@ -243,13 +378,13 @@ export default function TeacherDashboard() {
                 <div className="space-y-2">
                   <div className="flex justify-between items-center">
                     <span className="text-sm text-gray-600">Risk Level</span>
-                    <span className={`font-bold uppercase text-sm ${getRiskColor(selectedStudent.riskLevel)}`}>
-                      {selectedStudent.riskLevel}
+                    <span className={`font-bold uppercase text-sm ${getRiskColor(displayStudent.riskLevel)}`}>
+                      {displayStudent.riskLevel}
                     </span>
                   </div>
-                  <Progress value={selectedStudent.dropoutProbability * 100} className="h-2" />
+                  <Progress value={displayStudent.dropoutProbability * 100} className="h-2" />
                   <p className="text-xs text-gray-600">
-                    {(selectedStudent.dropoutProbability * 100).toFixed(1)}% dropout probability
+                    {(displayStudent.dropoutProbability * 100).toFixed(1)}% dropout probability
                   </p>
                 </div>
               </div>
@@ -258,11 +393,22 @@ export default function TeacherDashboard() {
               <div className="border border-slate-200 rounded-lg p-4 bg-white">
                 <h4 className="font-semibold mb-3 text-slate-900">Subject Performance</h4>
                 <div className="space-y-3">
-                  {selectedStudent.performances.map((perf: any, idx: number) => (
+                  {displayStudent.performances.map((perf: any, idx: number) => (
                     <div key={idx} className="space-y-1">
                       <div className="flex justify-between text-sm">
                         <span className="text-gray-600">{perf.subject}</span>
-                        <span className="font-bold text-blue-600">{perf.grade}%</span>
+                        {isEditMode ? (
+                          <Input
+                            type="number"
+                            min="0"
+                            max="100"
+                            value={perf.grade}
+                            onChange={(e) => handlePerformanceChange(idx, parseInt(e.target.value))}
+                            className="w-20 h-6 text-right"
+                          />
+                        ) : (
+                          <span className="font-bold text-blue-600">{perf.grade}%</span>
+                        )}
                       </div>
                       <Progress value={perf.grade} className="h-2" />
                     </div>
@@ -276,15 +422,15 @@ export default function TeacherDashboard() {
                 <div className="grid grid-cols-3 gap-4">
                   <div className="text-center">
                     <p className="text-xs text-gray-600">Level</p>
-                    <p className="text-2xl font-bold text-blue-600">{selectedStudent.gamification.level}</p>
+                    <p className="text-2xl font-bold text-blue-600">{displayStudent.gamification.level}</p>
                   </div>
                   <div className="text-center">
                     <p className="text-xs text-gray-600">XP</p>
-                    <p className="text-2xl font-bold text-emerald-600">{selectedStudent.gamification.xp}</p>
+                    <p className="text-2xl font-bold text-emerald-600">{displayStudent.gamification.xp}</p>
                   </div>
                   <div className="text-center">
                     <p className="text-xs text-gray-600">Streak</p>
-                    <p className="text-2xl font-bold text-orange-600">{selectedStudent.gamification.streak}</p>
+                    <p className="text-2xl font-bold text-orange-600">{displayStudent.gamification.streak}</p>
                   </div>
                 </div>
               </div>
