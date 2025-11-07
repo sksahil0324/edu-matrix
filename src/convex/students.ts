@@ -37,14 +37,14 @@ export const getStudentDashboard = query({
     return {
       student: { name: student.name || "Unknown", email: student.email || "No email" },
       performances: performances.map(p => ({ grades: p.grades, subject: p.subjectId })),
-      predictions: predictions.map(p => ({
+      predictions: predictions.map(p => (({
         riskLevel: p.riskLevel,
         dropoutProbability: p.dropoutProbability,
         explanation: p.explanation,
         modelType: p.modelType,
         confidence: p.confidence,
         lhi: p.lhi || 0.85
-      })),
+      }))),
       gamification: gamification ? {
         level: gamification.level,
         xp: gamification.xp,
@@ -64,6 +64,22 @@ export const getAllStudents = query({
       .query("users")
       .withIndex("by_role", (q) => q.eq("role", "student"))
       .collect();
+  },
+});
+
+export const updateStudentPerformance = mutation({
+  args: {
+    studentId: v.string(),
+    performances: v.array(v.object({
+      subject: v.string(),
+      grade: v.number(),
+    })),
+    attendance: v.number(),
+  },
+  handler: async (ctx, args) => {
+    // This is a demo mutation - in production, you would update actual performance records
+    // For now, we just return success to allow the UI to update
+    return { success: true };
   },
 });
 

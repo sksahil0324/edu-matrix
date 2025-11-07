@@ -10,7 +10,7 @@ import { AlertTriangle, BookOpen, Eye, LogOut, Users, Edit, Save, X } from "luci
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
 import { useAuth } from "@/hooks/use-auth";
-import { useQuery } from "convex/react";
+import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { toast } from "sonner";
 
@@ -21,6 +21,7 @@ export default function TeacherDashboard() {
   const [selectedStudent, setSelectedStudent] = useState<any>(null);
   const [isEditMode, setIsEditMode] = useState(false);
   const [editedStudent, setEditedStudent] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   // Mock data for demo - represents dataset from Convex
   // Using deterministic data generation based on student index for consistency
@@ -133,52 +134,68 @@ export default function TeacherDashboard() {
     setEditedStudent(null);
   };
 
-  const handleSaveEdit = () => {
-    // Update the student data
+  const updateStudentPerformance = useMutation(api.students.updateStudentPerformance);
+
+  const handleSaveEdit = async () => {
     if (editedStudent) {
-      // Recalculate risk based on updated data
-      const updatedStudent = { ...editedStudent };
-      
-      // Recalculate overall grade from performances
-      const newOverallGrade = Math.floor(
-        updatedStudent.performances.reduce((sum: number, p: any) => sum + p.grade, 0) / 
-        updatedStudent.performances.length
-      );
-      updatedStudent.overallGrade = newOverallGrade;
-      
-      // Recalculate risk based on actual data using consistent Temporal model thresholds
-      const attendanceScore = updatedStudent.attendance / 100;
-      const gradeScore = newOverallGrade / 100;
-      const performanceScore = (attendanceScore + gradeScore) / 2;
-      
-      let riskLevel: "low" | "medium" | "high" | "critical";
-      let dropoutProbability: number;
-      
-      if (performanceScore >= 0.85) {
-        riskLevel = "low";
-        dropoutProbability = 0.10;
-      } else if (performanceScore >= 0.75) {
-        riskLevel = "medium";
-        dropoutProbability = 0.30;
-      } else if (performanceScore >= 0.65) {
-        riskLevel = "high";
-        dropoutProbability = 0.60;
-      } else {
-        riskLevel = "critical";
-        dropoutProbability = 0.85;
+      try {
+        setIsLoading(true);
+        
+        const newOverallGrade = Math.floor(
+          editedStudent.performances.reduce((sum: number, p: any) => sum + p.grade, 0) / 
+          editedStudent.performances.length
+        );
+        
+        await updateStudentPerformance({
+          studentId: editedStudent.id,
+          performances: editedStudent.performances.map((p: any) => ({
+            subject: p.subject,
+            grade: p.grade,
+          })),
+          attendance: editedStudent.attendance,
+        });
+        
+        const attendanceScore = editedStudent.attendance / 100;
+        const gradeScore = newOverallGrade / 100;
+        const performanceScore = (attendanceScore + gradeScore) / 2;
+        
+        let riskLevel: "low" | "medium" | "high" | "critical";
+        let dropoutProbability: number;
+        
+        if (performanceScore >= 0.85) {
+          riskLevel = "low";
+          dropoutProbability = 0.10;
+        } else if (performanceScore >= 0.75) {
+          riskLevel = "medium";
+          dropoutProbability = 0.30;
+        } else if (performanceScore >= 0.65) {
+          riskLevel = "high";
+          dropoutProbability = 0.60;
+        } else {
+          riskLevel = "critical";
+          dropoutProbability = 0.85;
+        }
+        
+        const updatedStudent = {
+          ...editedStudent,
+          overallGrade: newOverallGrade,
+          riskLevel,
+          dropoutProbability,
+        };
+        
+        setStudents(prevStudents => 
+          prevStudents.map(s => s.id === updatedStudent.id ? updatedStudent : s)
+        );
+        
+        setSelectedStudent(updatedStudent);
+        setIsEditMode(false);
+        setIsLoading(false);
+        toast.success("Student details and risk assessment updated successfully!");
+      } catch (error) {
+        setIsLoading(false);
+        toast.error("Failed to update student details");
+        console.error("Update error:", error);
       }
-      
-      updatedStudent.riskLevel = riskLevel;
-      updatedStudent.dropoutProbability = dropoutProbability;
-      
-      // Update the students array to persist the changes
-      setStudents(prevStudents => 
-        prevStudents.map(s => s.id === updatedStudent.id ? updatedStudent : s)
-      );
-      
-      setSelectedStudent(updatedStudent);
-      setIsEditMode(false);
-      toast.success("Student details and risk assessment updated successfully!");
     }
   };
 
