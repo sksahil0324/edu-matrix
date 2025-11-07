@@ -19,26 +19,54 @@ export default function AdminDashboard() {
       { name: "3rd Year", year: 3, section: "A" },
       { name: "4th Year", year: 4, section: "A" },
     ],
-    students: Array.from({ length: 150 }, (_, i) => ({
-      name: `Student ${i + 1}`,
-      email: `student${i + 1}@edutrack.ai`,
-      attendance: Math.floor(Math.random() * 30) + 70,
-      overallGrade: Math.floor(Math.random() * 40) + 60,
-      riskLevel: ["low", "medium", "high", "critical"][Math.floor(Math.random() * 4)] as "low" | "medium" | "high" | "critical",
-      dropoutProbability: Math.random(),
-      performances: [
+    students: Array.from({ length: 150 }, (_, i) => {
+      const attendance = Math.floor(Math.random() * 30) + 70;
+      const performances = [
         { subject: "Data Structures & Algorithms", grade: Math.floor(Math.random() * 40) + 60 },
         { subject: "Operating Systems", grade: Math.floor(Math.random() * 40) + 60 },
         { subject: "Database Management Systems", grade: Math.floor(Math.random() * 40) + 60 },
         { subject: "Computer Networks", grade: Math.floor(Math.random() * 40) + 60 },
         { subject: "Software Engineering", grade: Math.floor(Math.random() * 40) + 60 },
-      ],
-      gamification: {
-        level: Math.floor(Math.random() * 20) + 1,
-        xp: Math.floor(Math.random() * 15000),
-        streak: Math.floor(Math.random() * 30),
-      },
-    })),
+      ];
+      const overallGrade = Math.floor(performances.reduce((sum, p) => sum + p.grade, 0) / performances.length);
+      
+      // Calculate risk based on actual data
+      const attendanceScore = attendance / 100;
+      const gradeScore = overallGrade / 100;
+      const performanceScore = (attendanceScore + gradeScore) / 2;
+      
+      let riskLevel: "low" | "medium" | "high" | "critical";
+      let dropoutProbability: number;
+      
+      if (performanceScore >= 0.85) {
+        riskLevel = "low";
+        dropoutProbability = 0.05 + Math.random() * 0.15;
+      } else if (performanceScore >= 0.75) {
+        riskLevel = "medium";
+        dropoutProbability = 0.25 + Math.random() * 0.20;
+      } else if (performanceScore >= 0.65) {
+        riskLevel = "high";
+        dropoutProbability = 0.50 + Math.random() * 0.25;
+      } else {
+        riskLevel = "critical";
+        dropoutProbability = 0.75 + Math.random() * 0.20;
+      }
+      
+      return {
+        name: `Student ${i + 1}`,
+        email: `student${i + 1}@edutrack.ai`,
+        attendance,
+        overallGrade,
+        riskLevel,
+        dropoutProbability,
+        performances,
+        gamification: {
+          level: Math.floor(Math.random() * 20) + 1,
+          xp: Math.floor(Math.random() * 15000),
+          streak: Math.floor(Math.random() * 30),
+        },
+      };
+    }),
     teachers: Array.from({ length: 60 }, (_, i) => ({
       name: `Teacher ${i + 1}`,
       email: `teacher${i + 1}@edutrack.ai`,
@@ -46,16 +74,11 @@ export default function AdminDashboard() {
       studentsCount: Math.floor(Math.random() * 40) + 30,
       experience: Math.floor(Math.random() * 15) + 1,
     })),
-    predictions: [
-      { modelType: "Temporal", riskLevel: "low", dropoutProbability: 0.15 },
-      { modelType: "Temporal", riskLevel: "medium", dropoutProbability: 0.45 },
-      { modelType: "Temporal", riskLevel: "high", dropoutProbability: 0.68 },
-      { modelType: "Temporal", riskLevel: "low", dropoutProbability: 0.22 },
-      { modelType: "Temporal", riskLevel: "medium", dropoutProbability: 0.38 },
-      { modelType: "Temporal", riskLevel: "critical", dropoutProbability: 0.92 },
-      { modelType: "Temporal", riskLevel: "low", dropoutProbability: 0.18 },
-      { modelType: "Temporal", riskLevel: "medium", dropoutProbability: 0.52 },
-    ],
+    predictions: dashboardData.students.slice(0, 8).map((student) => ({
+      modelType: "Temporal",
+      riskLevel: student.riskLevel,
+      dropoutProbability: student.dropoutProbability,
+    })),
     metrics: [
       { modelType: "Temporal", weekNumber: 12, accuracy: 0.96, f1Score: 0.94, rocAuc: 0.97 },
       { modelType: "Holistic", weekNumber: 12, accuracy: 0.93, f1Score: 0.91, rocAuc: 0.94 },

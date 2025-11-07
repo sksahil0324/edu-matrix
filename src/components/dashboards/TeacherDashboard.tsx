@@ -26,27 +26,55 @@ export default function TeacherDashboard() {
       { name: "Computer Networks", id: "4" },
       { name: "Software Engineering", id: "5" },
     ],
-    students: Array.from({ length: 38 }, (_, i) => ({
-      id: `student_${i + 1}`,
-      name: `Student ${i + 1} - 1st Year`,
-      email: `student${i + 1}@edutrack.ai`,
-      attendance: Math.floor(Math.random() * 30) + 70,
-      overallGrade: Math.floor(Math.random() * 40) + 60,
-      riskLevel: ["low", "medium", "high", "critical"][Math.floor(Math.random() * 4)] as "low" | "medium" | "high" | "critical",
-      dropoutProbability: Math.random(),
-      performances: [
+    students: Array.from({ length: 38 }, (_, i) => {
+      const attendance = Math.floor(Math.random() * 30) + 70;
+      const performances = [
         { subject: "Data Structures & Algorithms", grade: Math.floor(Math.random() * 40) + 60 },
         { subject: "Operating Systems", grade: Math.floor(Math.random() * 40) + 60 },
         { subject: "Database Management Systems", grade: Math.floor(Math.random() * 40) + 60 },
         { subject: "Computer Networks", grade: Math.floor(Math.random() * 40) + 60 },
         { subject: "Software Engineering", grade: Math.floor(Math.random() * 40) + 60 },
-      ],
-      gamification: {
-        level: Math.floor(Math.random() * 20) + 1,
-        xp: Math.floor(Math.random() * 15000),
-        streak: Math.floor(Math.random() * 30),
-      },
-    })),
+      ];
+      const overallGrade = Math.floor(performances.reduce((sum, p) => sum + p.grade, 0) / performances.length);
+      
+      // Calculate risk based on actual data
+      const attendanceScore = attendance / 100;
+      const gradeScore = overallGrade / 100;
+      const performanceScore = (attendanceScore + gradeScore) / 2;
+      
+      let riskLevel: "low" | "medium" | "high" | "critical";
+      let dropoutProbability: number;
+      
+      if (performanceScore >= 0.85) {
+        riskLevel = "low";
+        dropoutProbability = 0.05 + Math.random() * 0.15; // 5-20%
+      } else if (performanceScore >= 0.75) {
+        riskLevel = "medium";
+        dropoutProbability = 0.25 + Math.random() * 0.20; // 25-45%
+      } else if (performanceScore >= 0.65) {
+        riskLevel = "high";
+        dropoutProbability = 0.50 + Math.random() * 0.25; // 50-75%
+      } else {
+        riskLevel = "critical";
+        dropoutProbability = 0.75 + Math.random() * 0.20; // 75-95%
+      }
+      
+      return {
+        id: `student_${i + 1}`,
+        name: `Student ${i + 1} - 1st Year`,
+        email: `student${i + 1}@edutrack.ai`,
+        attendance,
+        overallGrade,
+        riskLevel,
+        dropoutProbability,
+        performances,
+        gamification: {
+          level: Math.floor(Math.random() * 20) + 1,
+          xp: Math.floor(Math.random() * 15000),
+          streak: Math.floor(Math.random() * 30),
+        },
+      };
+    }),
     performances: [
       { grades: 85, subject: "Data Structures & Algorithms" },
       { grades: 92, subject: "Operating Systems" },
@@ -54,22 +82,18 @@ export default function TeacherDashboard() {
       { grades: 78, subject: "Computer Networks" },
       { grades: 95, subject: "Software Engineering" },
     ],
-    predictions: Array.from({ length: 10 }, (_, i) => {
-      const probability = Math.random();
-      let riskLevel: "low" | "medium" | "high" | "critical";
-      if (probability < 0.25) riskLevel = "low";
-      else if (probability < 0.50) riskLevel = "medium";
-      else if (probability < 0.75) riskLevel = "high";
-      else riskLevel = "critical";
-      
-      return {
-        studentId: `student_${i + 1}`,
-        riskLevel,
-        dropoutProbability: probability,
-        explanation: `Temporal model (96% accuracy) analysis: ${riskLevel} risk detected based on attendance, grades, engagement, and behavioral patterns over the past 12 weeks.`,
-        modelType: "Temporal",
-      };
-    }),
+    predictions: data.students.slice(0, 10).map((student) => ({
+      studentId: student.id,
+      riskLevel: student.riskLevel,
+      dropoutProbability: student.dropoutProbability,
+      explanation: `Temporal model (96% accuracy) analysis: ${student.riskLevel} risk detected. Attendance: ${student.attendance}%, Overall Grade: ${student.overallGrade}%. ${
+        student.riskLevel === "critical" ? "Immediate intervention required - student showing multiple risk factors." :
+        student.riskLevel === "high" ? "Close monitoring needed - performance below expected thresholds." :
+        student.riskLevel === "medium" ? "Some concerns identified - targeted support recommended." :
+        "Student performing well with consistent engagement and strong academic results."
+      }`,
+      modelType: "Temporal",
+    })),
   };
 
   const handleLogout = () => {
