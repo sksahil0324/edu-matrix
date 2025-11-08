@@ -232,7 +232,7 @@ export default function Landing() {
       {/* Footer */}
       <footer className="border-t border-slate-200 py-8 px-4 bg-white">
         <div className="container mx-auto text-center text-slate-500">
-          <p>© 2024 EduTrack AI – AI Based Student Performance Predictor — Powered by Advanced Machine Learning</p>
+          <p>© 2025 EduTrack AI – AI Based Student Performance Predictor — Powered by Advanced Machine Learning</p>
         </div>
       </footer>
     </div>
